@@ -7,7 +7,7 @@ rem  Creates %root%\%group%.%version%.bat downloader for given %packages%
 rem  based on Visual Studio cache from given %cache_path%.
 
 setlocal EnableDelayedExpansion
-set root=%~dp0\..
+set root=%~dp0..
 set PATH=%PATH%;%root%\utils
 
 
@@ -49,7 +49,16 @@ if "%packages%"=="" (
 )
 
 
-rem  --- List package dir path patterns --------------------------------------
+echo Visual Studio cache: %cache_path%
+echo Creating downloader for %group%:
+for %%i in (%packages%) do (
+  echo   %%i
+)
+
+
+rem  -------------------------------------------------------------------------
+
+echo|set/p=Building search patterns from package names ... 
 
 set /a package_count=0
 set path_patterns=
@@ -60,15 +69,20 @@ for %%i in (%packages%) do (
 )
 
 if %package_count% EQU 0 (
-  echo [ERR] Can't count given Visual Studio package names.
+  echo.
+  echo   [ERR] Can't count given Visual Studio package names.
   goto :END
 )
 
+echo OK
 
-rem  --- List package dirs ---------------------------------------------------
 
-rem  NOTE: use array instead of list to store dir names, because its names 
-rem  contains bad delimiters that complicate looping through.
+rem  -------------------------------------------------------------------------
+
+echo|set/p=Search for cached Visual Studio %group% packages ... 
+
+rem  NOTE: using array instead of list for the %dirs% allows iterating over
+rem  dir names with string separators, e.g. commas.
 
 set /a dir_count=0
 set dirs=
@@ -79,13 +93,18 @@ for /d %%i in (%path_patterns%) do (
 )
 
 if %dir_count% NEQ %package_count% (
-  echo [ERR] Inconsistent count of package names and related found dirs.
-  echo Probably found several versions.
+  echo.
+  echo   [ERR] Inconsistent count of package names and related found dirs.
+  echo   Probably found several versions.
   goto :END
 )
 
+echo OK
 
-rem  --- Check versions ------------------------------------------------------
+
+rem  -------------------------------------------------------------------------
+
+echo|set/p=Reading first found package version ... 
 
 set VERSION_PATTERN=\d\d\.\d\d\.\d\d\.\d
 set get_version=call strmatch "%VERSION_PATTERN%" -txt
@@ -95,18 +114,27 @@ for /f %%i in ('%get_version% "%dirs[1]%"') do (
   set version=%%i
 )
 
+echo OK
+
+echo|set/p=Check all found packages are of version %version% ... 
+
 rem  Compare next packages versions with first version.
 for /l %%i in (2,1,%dir_count%) do (
   for /f %%j in ('%get_version% !dirs[%%i]!') do (
     if not "%%j"=="%version%" (
-      echo [ERR] Inconsistent packages versions.
+      echo.
+      echo   [ERR] Inconsistent packages versions.
       goto :END
     )
   )
 )
 
+echo OK
 
-rem  --- List package URLs ---------------------------------------------------
+
+rem  -------------------------------------------------------------------------
+
+echo|set/p=Read packages URLs from info files ... 
 
 rem  Each `_package.json` is expected to contain exacly one URL matching this
 set VSIX_URL_PATTERN=https:\/\/.*\.vsix
@@ -118,7 +146,8 @@ for /l %%i in (1,1,%dir_count%) do (
   set info_file=!dirs[%%i]!\_package.json
 
   if not exist "!info_file!" (
-    echo [ERR] Not exists: !info_file!
+    echo.
+    echo   [ERR] Not exists: !info_file!
     goto :END
   )
 
@@ -127,13 +156,18 @@ for /l %%i in (1,1,%dir_count%) do (
   )
 )
 
+echo OK
+
 
 rem  --- Create batch downloader ---------------------------------------------
+
+echo|set/p=Writing packages downloader ... 
 
 set outfile=%root%\%group%.%version%.bat
 
 if exist "%outfile%" (
-  echo [WARN] Downloader for %group% v%version% will be overwritten.
+  echo.
+  echo   [WARN] Downloader %outfile% will be overwritten.
   del "%outfile%"
 )
 
@@ -146,6 +180,8 @@ for %%i in (%urls%) do (
     echo call download %%i "%%~1\%%j" >> "%outfile%"
   )
 )
+
+echo DONE
 
 
 :END
