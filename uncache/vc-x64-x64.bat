@@ -8,6 +8,8 @@ rem  based on Visual Studio cache.
 
 setlocal
 
+set GROUP=vc-x64-x64
+
 set PACKAGES=^
   CRT.Headers.base ^
   CRT.Redist.X64.base ^
@@ -17,7 +19,9 @@ set PACKAGES=^
   Tools.HostX64.TargetX64.base ^
   Tools.HostX64.TargetX64.Res.base
 
+set batch_path=%~dp0
 set cache_path=%~1
-set GROUP=vc-x64-x64
-call uncache "%cache_path%" %GROUP% %PACKAGES%
+
+call "%batch_path%\uncache" "%cache_path%" %GROUP% %PACKAGES%
+
 endlocal

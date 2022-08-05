@@ -8,7 +8,7 @@ rem  based on Visual Studio cache from given %cache_path%.
 
 setlocal EnableDelayedExpansion
 set root=%~dp0\..
-set PATH=%PATH%;%root%
+set PATH=%PATH%;%root%\utils
 
 
 rem  --- Parse args ----------------------------------------------------------
@@ -88,19 +88,16 @@ if %dir_count% NEQ %package_count% (
 rem  --- Check versions ------------------------------------------------------
 
 set VERSION_PATTERN=\d\d\.\d\d\.\d\d\.\d
-set get_version=call strmatch -txt "%dirs[1]%" "%VERSION_PATTERN%"
+set get_version=call strmatch "%VERSION_PATTERN%" -txt
 
-for /f %%i in ('%get_version%') do (
+rem  Take version of first found package.
+for /f %%i in ('%get_version% "%dirs[1]%"') do (
   set version=%%i
 )
 
 rem  Compare next packages versions with first version.
 for /l %%i in (2,1,%dir_count%) do (
-
-  set next_dir=!dirs[%%i]!
-  set get_next_version=call strmatch -txt "!next_dir!" "%VERSION_PATTERN%"
-
-  for /f %%j in ('!get_next_version!') do (
+  for /f %%j in ('%get_version% !dirs[%%i]!') do (
     if not "%%j"=="%version%" (
       echo [ERR] Inconsistent packages versions.
       goto :END
@@ -113,7 +110,7 @@ rem  --- List package URLs ---------------------------------------------------
 
 rem  Each `_package.json` is expected to contain exacly one URL matching this
 set VSIX_URL_PATTERN=https:\/\/.*\.vsix
-
+set get_url=call strmatch "%VSIX_URL_PATTERN%" -file
 set urls=
 
 for /l %%i in (1,1,%dir_count%) do (
@@ -121,13 +118,11 @@ for /l %%i in (1,1,%dir_count%) do (
   set info_file=!dirs[%%i]!\_package.json
 
   if not exist "!info_file!" (
-    echo [ERR] Not exists: !file!
+    echo [ERR] Not exists: !info_file!
     goto :END
   )
 
-  set find_url=call strmatch -file "!info_file!" "%VSIX_URL_PATTERN%"
-
-  for /f %%j in ('!find_url!') do (
+  for /f %%j in ('%get_url% "!info_file!"') do (
     set urls=!urls! %%j
   )
 )
@@ -144,12 +139,10 @@ if exist "%outfile%" (
 
 rem  VSIX URL suffix.
 set VSIX_FILE_PATTERN=[.\w\d]+$
+set get_vsix_name=call strmatch "%VSIX_FILE_PATTERN%" -txt
 
 for %%i in (%urls%) do (
-
-  set get_vsix_name=call strmatch -txt "%%i" "%VSIX_FILE_PATTERN%"
-
-  for /f %%j in ('!get_vsix_name!') do (
+  for /f %%j in ('%get_vsix_name% "%%i"') do (
     echo call download %%i "%%~1\%%j" >> "%outfile%"
   )
 )
