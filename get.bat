@@ -21,18 +21,25 @@ if "%downloader_name%"=="" (
   goto :END
 )
 
-rem  Find a downloader file.
+rem  When %downloader_name% is a full file path or full file name.
 if exist "%downloader_name%" (
   set downloader=%downloader_name%
 ) else (
-  for %%i in (%root%%downloader_name%) do (
+  for %%i in (%root%get\%downloader_name%) do (
     set downloader=%%i
   )
 )
 
-rem  Find latest downloader version for specified downloader group.
+rem  When %downloader_name% is a file name without `.bat` ext.
 if not exist "%downloader%" (
-  for %%i in (%root%%downloader_name%.*.bat) do (
+  for %%i in (%root%get\%downloader_name%.bat) do (
+    set downloader=%%i
+  )
+)
+
+rem  When %downloader_name% is only group name.
+if not exist "%downloader%" (
+  for %%i in (%root%get\%downloader_name%.*.bat) do (
     set downloader=%%i
   )
 )

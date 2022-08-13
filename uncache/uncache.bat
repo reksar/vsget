@@ -2,7 +2,7 @@
 
 rem  -------------------------------------------------------------------------
 rem  Using: `uncache [PACKAGES GROUP] [PACKAGES PATH PATTERNS ...]`.
-rem  Creates a `%root%\%group%.%version%.bat` downloader for given packages
+rem  Creates a `%root%\get\%group%.%version%.bat` downloader for given packages
 rem  %path_patterns% in the Visual Studio cache. A group name can be arbitrary.
 rem  -------------------------------------------------------------------------
 
@@ -138,11 +138,11 @@ rem  --- Create batch downloader ---------------------------------------------
 
 echo|set/p=Writing downloader %group%.%version%.bat ... 
 
-set outfile=%root%\%group%.%version%.bat
+set outfile=%root%\get\%group%.%version%.bat
 
 if exist "%outfile%" (
   echo.
-  echo   [WARN] %outfile% will be overwritten.
+  echo   [WARN] overwritting the %outfile%
   del "%outfile%"
 )
 
