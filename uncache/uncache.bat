@@ -1,17 +1,31 @@
 @echo off
 
-rem  -------------------------------------------------------------------------
-rem  Using: `uncache [PACKAGES GROUP] [PACKAGES PATH PATTERNS ...]`.
-rem  Creates a `%root%\get\%group%.%version%.bat` downloader for given packages
-rem  %path_patterns% in the Visual Studio cache. A group name can be arbitrary.
-rem  -------------------------------------------------------------------------
+rem  --------------------------------------------------------------------------
+rem  Using: `uncache [VS CACHE PATH] [GROUP] [PACKAGES ...]`.
+rem  Creates `%root%\get\%group%.%version%.bat` downloader for given %packages%
+rem  list from the Visual Studio %cache_path%. A %group% name can be arbitrary.
+rem  --------------------------------------------------------------------------
 
 setlocal EnableDelayedExpansion
 set root=%~dp0..
 set PATH=%PATH%;%root%\utils
 
 
-rem  --- Parse args ----------------------------------------------------------
+rem  --- Parse args -----------------------------------------------------------
+
+set cache_path=%~1
+
+if "%cache_path%"=="" (
+  echo [ERR] Visual Studio cache path is not set.
+  goto :END
+)
+
+if not exist "%cache_path%" (
+  echo [ERR] Visual Studio cache path is not exists.
+  goto :END
+)
+
+shift
 
 set group=%~1
 
@@ -20,48 +34,51 @@ if "%group%"=="" (
   goto :END
 )
 
-echo Creating downloader for %group%:
+rem  All remaining args are cached VS packages.
+rem  NOTE: using an array instead of a list for allows iterating over paths
+rem  containing separators such as spaces and commas.
 
-rem  All remaining args are path patterns for VS packages cache dirs.
-rem  NOTE: using an array instead of a list for the %path_patterns% and %dirs%
-rem  allows iterating over dir names containing separators, e.g. spaces and
-rem  commas.
-
-set /a pattern_count=0
-set path_patterns=
-:PATTERNS
+set /a package_count=0
+set packages=
+:PACKAGES
 shift
 if not "%~1"=="" (
-  set /a pattern_count+=1
-  set path_patterns[!pattern_count!]=%~1
-  goto :PATTERNS
+  set /a package_count+=1
+  set packages[!package_count!]=%~1
+  goto :PACKAGES
 )
 
-if %pattern_count% EQU 0 (
+if %package_count% EQU 0 (
   echo [ERR] Can't count given Visual Studio packages path patterns.
   goto :END
 )
 
-for /l %%i in (1,1,%pattern_count%) do (
-  echo   !path_patterns[%%i]!
+
+rem  --- Build path patterns to search packages dirs in VS cache --------------
+
+echo Creating downloader for %group%:
+
+for /l %%i in (1,1,%package_count%) do (
+  echo   !packages[%%i]!
+  set path_patterns[%%i]=%cache_path%\!packages[%%i]!*
 )
 
 
-rem  -------------------------------------------------------------------------
+rem  --------------------------------------------------------------------------
 
-echo|set/p=Searching for cached Visual Studio %group% packages ... 
+echo|set/p=Searching for cached %group% packages ... 
 
 set /a dir_count=0
 set dirs=
 
-for /l %%i in (1,1,%pattern_count%) do (
+for /l %%i in (1,1,%package_count%) do (
   for /d %%j in ("!path_patterns[%%i]!") do (
     set /a dir_count+=1
     set dirs[!dir_count!]=%%j
   )
 )
 
-if %dir_count% NEQ %pattern_count% (
+if %dir_count% NEQ %package_count% (
   echo.
   echo   [ERR] Inconsistent count of package patterns and matched dirs.
   echo   Probably some packages were not found or several versions were found.
@@ -71,9 +88,9 @@ if %dir_count% NEQ %pattern_count% (
 echo OK
 
 
-rem  -------------------------------------------------------------------------
+rem  --------------------------------------------------------------------------
 
-echo|set/p=Reading first found package version ... 
+echo|set/p=Reading first matched package version ... 
 
 set VERSION_PATTERN=\d+\.\d+\.\d+.\d*
 set get_version=call strmatch "%VERSION_PATTERN%" -txt
@@ -107,7 +124,7 @@ for /l %%i in (2,1,%dir_count%) do (
 echo OK
 
 
-rem  -------------------------------------------------------------------------
+rem  --------------------------------------------------------------------------
 
 echo|set/p=Reading packages URLs from info files ... 
 
@@ -134,7 +151,7 @@ for /l %%i in (1,1,%dir_count%) do (
 echo OK
 
 
-rem  --- Create batch downloader ---------------------------------------------
+rem  --- Create batch downloader ----------------------------------------------
 
 echo|set/p=Writing downloader %group%.%version%.bat ... 
 
