@@ -6,6 +6,7 @@ rem  Creates `%root%\get\%group%.%version%.bat` downloader for given %packages%
 rem  list from the Visual Studio %cache_path%. A %group% name can be arbitrary.
 rem  --------------------------------------------------------------------------
 
+
 setlocal EnableDelayedExpansion
 set root=%~dp0..
 set PATH=%PATH%;%root%\utils
@@ -108,9 +109,11 @@ if "%version%"=="" (
 
 echo OK
 
+
+rem  --------------------------------------------------------------------------
+
 echo|set/p=Checking whole packages group is of version %version% ... 
 
-rem  Compare next packages versions with first version.
 for /l %%i in (2,1,%dir_count%) do (
   for /f %%j in ('%get_version% !dirs[%%i]!') do (
     if not "%%j"=="%version%" (
@@ -131,6 +134,7 @@ echo|set/p=Reading packages URLs from info files ...
 rem  Each `_package.json` is expected to contain exacly one URL matching this
 set VSIX_URL_PATTERN=https:\/\/.*\.vsix
 set get_url=call strmatch "%VSIX_URL_PATTERN%" -file
+
 set urls=
 
 for /l %%i in (1,1,%dir_count%) do (
@@ -169,10 +173,25 @@ rem  VSIX URL suffix.
 set VSIX_FILE_PATTERN=[.\w\d]+$
 set get_vsix_name=call strmatch "%VSIX_FILE_PATTERN%" -txt
 
+set HASH_PATTERN=/[\w\d]+/
+set get_vsix_hash=call strmatch "%HASH_PATTERN%" -txt
+
 for %%i in (%urls%) do (
   for /f %%j in ('%get_vsix_name% "%%i"') do (
-    echo echo   %%j >> "%outfile%"
-    echo call download %%i "%%~1\%%j" >> "%outfile%"
+
+    if /i "%%j"=="payload.vsix" (
+      rem  Use hash instead of default name.
+      for /f %%k in ('%get_vsix_hash% "%%i"') do (
+        set hash=%%k
+        set vsix_name=!hash:~1,7!.vsix
+      )
+    ) else (
+      rem  Assuming the name is unique.
+      set vsix_name=%%j
+    )
+
+    echo echo   !vsix_name! >> "%outfile%"
+    echo call download %%i "%%~1\!vsix_name!" >> "%outfile%"
   )
 )
 
