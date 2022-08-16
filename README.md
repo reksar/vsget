@@ -1,4 +1,4 @@
-# Get Visual Studio packages
+# Get
 
 `get [DOWNLOADER] [DESTINATION DIR]`
 
@@ -10,10 +10,10 @@ This will download `*.vsix` packages to `[DESTINATION DIR]`.
 **Examples:**
 ```bat
 get vc-x64-x64 <destination>
-get msbuild <destination>
-get msbuild.17.2.1.2225201 <destination>
-get msbuild.17.2.1.2225201.bat <destination>
-get <abspath>\get\msbuild.17.2.1.2225201.bat <destination>
+get msbuild-x64 <destination>
+get msbuild-x64.17.2.1.2225201 <destination>
+get msbuild-x64.17.2.1.2225201.bat <destination>
+get <abspath>\get\msbuild-x64.17.2.1.2225201.bat <destination>
 ```
 
 # Unpack
@@ -24,13 +24,16 @@ Unpack `Contents` of each downloaded `*.vsix` package to `<destination>`.
 
 # Uncache
 
-`uncache\[GROUP] [MSVS CACHE PATH]`
+Uncache all: `uncache [MSVS CACHE PATH]`
 
-Create `get\[GROUP].<version>.bat` downloader for spicefied packages `[GROUP]` 
-from specified Visual Studio `[CACHE PATH]`.
+Uncache specified packages group: `uncache\[GROUP] [MSVS CACHE PATH]`
+
+Uncaching creates `get\[GROUP].<version>.bat` downloaders for spicefied 
+packages `[GROUP]` from specified `[MSVS CACHE PATH]`.
 
 **Examples:**
 ```bat
+uncache <cache path>
 uncache\vc-x64-x64 <cache path>
-uncache\msbuild <cache path>
+uncache\msbuild-x64 <cache path>
 ```
