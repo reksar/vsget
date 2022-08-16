@@ -163,12 +163,15 @@ if exist "%outfile%" (
   del "%outfile%"
 )
 
+echo echo Downloading with %%~nx0 >> "%outfile%"
+
 rem  VSIX URL suffix.
 set VSIX_FILE_PATTERN=[.\w\d]+$
 set get_vsix_name=call strmatch "%VSIX_FILE_PATTERN%" -txt
 
 for %%i in (%urls%) do (
   for /f %%j in ('%get_vsix_name% "%%i"') do (
+    echo echo   %%j >> "%outfile%"
     echo call download %%i "%%~1\%%j" >> "%outfile%"
   )
 )

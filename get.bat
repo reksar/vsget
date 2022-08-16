@@ -49,8 +49,6 @@ if not exist "%downloader%" (
   goto :END
 )
 
-echo Using downloader %downloader%
-
 
 rem  --- Parse destination ---------------------------------------------------
 

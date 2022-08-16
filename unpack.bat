@@ -32,15 +32,15 @@ if "%destination:~-1,1%"=="\" (
 
 set tmp=%destination%\tmp
 
-echo.
+echo Unpacking
 
 for %%i in (%destination%\*.vsix) do (
-  echo Unpacking %%~ni
+  echo   %%~ni
   set zip=%%~dpni.zip
   move "%%i" "!zip!" >NUL
   call unzip "!zip!" "%tmp%"
 
-  robocopy "%tmp%\Contents" "%destination%" * /S /NFL /NDL /NJH /NJS
+  robocopy "%tmp%\Contents" "%destination%" * /S /NFL /NDL /NJH /NJS >NUL
 
   rem  Clear %tmp% dir.
   del /Q /S "%tmp%\*.*" >NUL
