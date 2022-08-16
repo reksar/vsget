@@ -1,10 +1,10 @@
 @echo off
 
-rem  -------------------------------------------------------------------------
+rem  --------------------------------------------------------------------------
 rem  Using: `get [DOWNLOADER] [DESTINATION DIR]`.
 rem  A [DOWNLOADER] can be either full file name %group%.%version%.bat or just
 rem  %group% to use latest downloader %version%.
-rem  -------------------------------------------------------------------------
+rem  --------------------------------------------------------------------------
 
 
 setlocal
@@ -12,7 +12,7 @@ set root=%~dp0
 set PATH=%PATH%;%root%utils
 
 
-rem  --- Select downloader ---------------------------------------------------
+rem  --- Select downloader ----------------------------------------------------
 
 set downloader_name=%~1
 
@@ -50,7 +50,7 @@ if not exist "%downloader%" (
 )
 
 
-rem  --- Parse destination ---------------------------------------------------
+rem  --- Parse destination ----------------------------------------------------
 
 set destination=%~2
 
@@ -66,7 +66,7 @@ if not exist "%destination%" (
 rem  TODO: check if %destination% is dir
 
 
-rem  --- Getting packages ----------------------------------------------------
+rem  --- Getting packages -----------------------------------------------------
 
 call "%downloader%" "%destination%"
 

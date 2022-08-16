@@ -1,11 +1,11 @@
 @echo off
 
-rem  -------------------------------------------------------------------------
+rem  --------------------------------------------------------------------------
 rem  Using: `unpack [DESTINATION DIR]`.
 rem  Unpacks all `*.vsix` files stored in `[DESTINATION DIR]`. Extracts only
 rem  the contents of the `Contents` dir of each `*.vsix` package and puts in
 rem  `[DESTINATION DIR]`.
-rem  -------------------------------------------------------------------------
+rem  --------------------------------------------------------------------------
 
 
 setlocal EnableDelayedExpansion
