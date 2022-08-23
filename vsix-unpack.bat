@@ -10,7 +10,7 @@ rem  --------------------------------------------------------------------------
 
 setlocal EnableDelayedExpansion
 set root=%~dp0
-set PATH=%PATH%;%root%utils
+set PATH=%root%utils;%PATH%
 
 set destination=%~1
 
@@ -20,10 +20,11 @@ if "%destination%"=="" (
 )
 
 if not exist "%destination%" (
-  echo [ERR] Destination is not exists.
+  echo [ERR] Destination is not exists: %destination%
   goto :END
 )
 
+rem  Remove trailing backslashes.
 :SANITIZE
 if "%destination:~-1,1%"=="\" (
   set destination=%destination:~,-1%
