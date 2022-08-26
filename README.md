@@ -1,5 +1,14 @@
 # Get
 
+Download MS Visual C++, MS Build and Windows SDK to `destination` dir.
+
+**NOTE:** init `vcvars` before using MS Visual Studio tools.
+
+**MSVC v143, MSBuild C++ v170, Windows SDK v10.0.20348.0 (x64 -> x64)**
+`vc-x64-x64.143.170.20348 <destination>`
+
+## Get VSIX package
+
 `get [DOWNLOADER] [DESTINATION DIR]`
 
 A `[DOWNLOADER]` can be either full file name `<group>.<version>.bat` or just 
@@ -16,13 +25,13 @@ get msbuild-x64.17.2.1.2225201.bat <destination>
 get <abspath>\get\msbuild-x64.17.2.1.2225201.bat <destination>
 ```
 
-# Unpack
+# Unpack VSIX packages
 
 `unpack <destination>`
 
 Unpack `Contents` of each downloaded `*.vsix` package to `<destination>`.
 
-# Uncache
+# Uncache MS Visual Studio component groups
 
 Uncache all: `uncache [MSVS CACHE PATH]`
 
