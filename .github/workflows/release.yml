@@ -1,0 +1,16 @@
+name: release
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - "v*.*.*"
+jobs:
+  make-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: zip -r -x=.git* vsget.zip .
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: vsget.zip
