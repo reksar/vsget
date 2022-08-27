@@ -8,11 +8,11 @@ rem  --------------------------------------------------------------------------
 setlocal
 
 rem  v143
-set VC_V=14.32.31326
+set VC_V=14.33.31629
 set VC=vc-x64-x64.%VC_V%
 
 rem  v170
-set MSBUILD_V=17.2.1.2225201
+set MSBUILD_V=17.3.1.2241501
 set MSBUILD=msbuild-x64.%MSBUILD_V%
 
 rem  v10.0.20348.0
