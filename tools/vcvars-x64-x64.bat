@@ -20,7 +20,7 @@ for /f %%i in ('dir /b /a:d %VSINSTALLDIR%VC\Tools\MSVC\*.*.*') do (
 
 if "%VCToolsVersion%"=="" (
   echo [ERR][%~n0] Cant't find any MSVC version.
-  goto :EOF
+  exit /b 1
 )
 
 
@@ -32,8 +32,8 @@ for /f %%i in ('dir /b /a:d %VSINSTALLDIR%Msbuild\Microsoft\VC\v*') do (
 )
 
 if "%v%"=="" (
-  echo [ERR][%~n0] Can't find any MSBuild props for MSVC.
-  goto :EOF
+  echo [WARN][%~n0] Can't find any MSBuild props for MSVC.
+  goto :SDK
 )
 
 rem  "v170" -> "170"
@@ -53,6 +53,7 @@ for /f %%i in ('dir /b /a:d "%VSINSTALLDIR%SDK\Windows Kits"') do (
 
 
 rem  --- Detect Windows SDK version -------------------------------------------
+:SDK
 
 rem  Pick latest common version for Lib and Include.
 for /f %%i in ('dir /b /a:d "%WindowsSDKDir%Lib"') do (
