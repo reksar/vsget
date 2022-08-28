@@ -48,10 +48,10 @@ if not exist "%sdk_destination%" (
 )
 
 copy "%vcvars%" "%destination%" >NUL
-call vsix-get %VC% "%destination%" || goto :END
-call vsix-get %MSBUILD% "%destination%" || goto :END
-call vsix-unpack "%destination%" || goto :END
-call sdk "%SDK_URL%" "%sdk_destination%" "%SDK_FEATURES%" || goto :END
+call "%root%sdk" "%SDK_URL%" "%sdk_destination%" "%SDK_FEATURES%" || goto :END
+call "%root%vsix-get" %VC% "%destination%" || goto :END
+call "%root%vsix-get" %MSBUILD% "%destination%" || goto :END
+call "%root%vsix-unpack" "%destination%" || goto :END
 
 :END
 endlocal

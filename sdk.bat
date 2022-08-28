@@ -195,7 +195,7 @@ del /q /s *.duplicate* >NUL 2>&1
 rem  --------------------------------------------------------------------------
 :MOVE_SDK
 
-echo Moving SDK to destination ...
+echo Moving SDK files ...
 
 setlocal EnableDelayedExpansion
 
@@ -219,7 +219,7 @@ endlocal
 
 rd /q /s "%tmp%"
 
-echo DONE
+echo Windows SDK installed.
 
 
 :END
