@@ -47,6 +47,7 @@ rem  - sets the `VCToolsInstallDir` in MSBuild props
 set VCToolsInstallDir_%v%=%VCToolsInstallDir%
 
 
+rem  Pick the latest dir in the Windows Kits.
 for /f %%i in ('dir /b /a:d "%VSINSTALLDIR%SDK\Windows Kits"') do (
   set WindowsSDKDir=%VSINSTALLDIR%SDK\Windows Kits\%%i\
 )
@@ -55,7 +56,7 @@ for /f %%i in ('dir /b /a:d "%VSINSTALLDIR%SDK\Windows Kits"') do (
 rem  --- Detect Windows SDK version -------------------------------------------
 :SDK
 
-rem  Pick latest common version for Lib and Include.
+rem  Pick the latest common version for Lib and Include.
 for /f %%i in ('dir /b /a:d "%WindowsSDKDir%Lib"') do (
   for /f %%j in ('dir /b /a:d "%WindowsSDKDir%Include"') do (
     if "%%i"=="%%j" (
@@ -105,7 +106,7 @@ set PATH=%VSINSTALLDIR%MSBuild\Current\Bin\%MSBuildBin%;%PATH%
 set INCLUDE=%VCToolsInstallDir%\include
 set INCLUDE=%WindowsSDK_IncludePath%;%INCLUDE%
 set LIBPATH=%VCToolsInstallDir%\lib\%Platform%\
-set LIB=%VCToolsInstallDir%\lib\%Platform%\
+set LIB=%VCToolsInstallDir%\lib\%Platform%\;%SDKLibs%
 
 
 rem  --- Unset tmp vars -------------------------------------------------------
