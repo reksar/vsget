@@ -1,11 +1,15 @@
-# Get
+# vsget
 
-Download MS Visual C++, MS Build and Windows SDK to `destination` dir.
-
-**NOTE:** init `vcvars` before using MS Visual Studio tools.
+Download MS Visual C++, MS Build and Windows SDK.
 
 **MSVC v143, MSBuild C++ v170, Windows SDK v10.0.20348.0 (x64 -> x64)**
+
 `vc-x64-x64.143.170.20348 <destination>`
+
+## Note
+
+Init the related `<destination>\vcvars*.bat` before using downloaded MS Visual
+Studio tools.
 
 ## Get VSIX package
 
