@@ -9,6 +9,7 @@ set Platform=x64
 set HostPlatform=x64
 set DisableRegistryUse=true
 set VSINSTALLDIR=%~dp0
+set VCINSTALLDIR=%VSINSTALLDIR%\VC
 
 
 rem  --- Detect MSVC version --------------------------------------------------
