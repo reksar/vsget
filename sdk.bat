@@ -1,12 +1,12 @@
 @echo off
 
 rem  --------------------------------------------------------------------------
-rem  Using: `sdk [URL] [DESTINATION] [FEATURES]`.
 rem  Download Windows SDK from specified [URL] and extract it to [DESTINATION].
-rem  Extracts files using SDK installers but does not installation.
+rem  Using:
 rem
-rem  [FEATURES] is an optional list to specify SDK components to download with
-rem  Windows SDK installer. I can't find the official feature list.
+rem    sdk [URL] [DESTINATION] [FEATURES]
+rem
+rem  [FEATURES] is a list to specify SDK components.
 rem  See https://silentinstallhq.com/windows-11-software-development-kit-sdk-silent-install-how-to-guide
 rem  - OptionId.AvrfExternal
 rem  - OptionId.DesktopCPParm
@@ -23,14 +23,14 @@ rem  - OptionId.UWPManaged
 rem  - OptionId.WindowsDesktopDebuggers
 rem  - OptionId.WindowsPerformanceToolkit
 rem  - OptionId.WindowsSoftwareLogoToolkit
-rem The "+" means all components.
+rem  The "+" means all components.
 rem  --------------------------------------------------------------------------
 
 
 setlocal
 set DEFAULT_SDK=OptionId.DesktopCPPx64
 
-rem  Third-party util to extract *.MSI without installation.
+rem  Third-party util for extracting *.MSI content without installation.
 set LESSMSI_VER=v1.10.0
 set LESSMSI_ZIP=lessmsi-%LESSMSI_VER%.zip
 set LESSMSI_DOWNLOAD=https://github.com/activescott/lessmsi/releases/download
@@ -40,29 +40,28 @@ set root=%~dp0
 set sdk_url=%~1
 set destination=%~2
 set features=%~3
-set PATH=%root%utils;%PATH%
+set "PATH=%root%utils;%PATH%"
 
-if "%destination%"=="" (
+if "%destination%" == "" (
   echo [ERR] Destination is not specified.
-  goto :END
+  exit /b 1
 )
 
 if not exist "%destination%" (
   echo [ERR] Destination is not exists: %destination%
-  goto :END
+  exit /b 2
 )
 
-rem  Remove trailing backslashes.
-:SANITIZE
-if "%destination:~-1,1%"=="\" (
-  set destination=%destination:~,-1%
-  goto :SANITIZE
+:REMOVE_TRAILING_BACKSLASH
+if "%destination:~-1,1%" == "\" (
+  set "destination=%destination:~,-1%"
+  goto :REMOVE_TRAILING_BACKSLASH
 )
 
-set tmp=%destination%\tmp
+set "tmp=%destination%\tmp"
 
 if exist "%tmp%" (
-  echo [WARN] Dirty work. Already exists: %tmp%
+  echo [WARN] Dirty work! Already exists: %tmp%
 )
 
 
@@ -70,7 +69,7 @@ rem  --- Count SDK lib files in %destination% ---------------------------------
 
 set find_lib=findstr /p /n /e /c:"\.lib" /c:"\.h"
 
-set lib_dir=%destination%\Windows Kits
+set "lib_dir=%destination%\Windows Kits"
 set lib_files="%lib_dir%\*.lib" "%lib_dir%\*.h"
 set list_lib=dir /b /s %lib_files%
 
@@ -81,7 +80,7 @@ if exist "%lib_dir%" (
   for /f "tokens=1 delims=:" %%i in ('%list_lib% ^| %find_lib%') do (
     if %%i GTR 0 (
       echo [ERR] SDK libs already exists in %destination%
-      goto :END
+      exit /b 3
     )
   )
 )
@@ -89,14 +88,14 @@ if exist "%lib_dir%" (
 
 rem  --- Check SourceDir ------------------------------------------------------
 
-set SourceDir=%tmp%\SourceDir
+set "SourceDir=%tmp%\SourceDir"
 
 if exist "%SourceDir%" (
   echo [WARN] Already exists: %SourceDir%
 )
 
-rem  Reuse vars with new %lib_dir%.
-set lib_dir=%SourceDir%\Windows Kits
+rem  Reuse vars with the new %lib_dir% value.
+set "lib_dir=%SourceDir%\Windows Kits"
 set lib_files="%lib_dir%\*.lib" "%lib_dir%\*.h"
 set list_lib=dir /b /s %lib_files%
 
@@ -112,7 +111,7 @@ if exist "%SourceDir%\Windows Kits" (
 
 rem  --- Check SDK installers -------------------------------------------------
 
-set installers=%tmp%\Installers
+set "installers=%tmp%\Installers"
 set count_installers=dir /b "%installers%" ^^^| find /c /i
 
 if exist "%installers%" (
@@ -134,18 +133,25 @@ if exist "%installers%" (
 
 rem  --- Get SDK installers ---------------------------------------------------
 
-set winsdksetup=%tmp%\winsdksetup.exe
+set "winsdksetup=%tmp%\winsdksetup.exe"
 
 if not exist "%winsdksetup%" (
+
   echo|set/p=Downloading Windows SDK installer ... 
   call download "%sdk_url%" "%winsdksetup%"
-  echo OK
+
+  if exist "%winsdksetup%" (
+    echo OK
+  ) else (
+    echo FAIL
+    exit /b 4
+  )
 ) else echo [WARN] Already exists: %winsdksetup%
 
 rem  Not installation, just downloading SDK components with `/layout`.
 echo|set/p=Downloading SDK feature installers ... 
 
-if "%features%"=="" (
+if "%features%" == "" (
   set features=%DEFAULT_SDK%
 )
 
@@ -157,13 +163,17 @@ if "%features%"=="" (
   /quiet ^
   /ceip off
 
-echo OK
+if %ERRORLEVEL% NEQ 0 (
+  echo FAIL
+  echo [ERR] See %tmp%\sdk.log
+  exit /b 5
+) else echo OK
 
 
 rem  --------------------------------------------------------------------------
 :LESSMSI
 
-set lessmsi=%tmp%\lessmsi\lessmsi.exe
+set "lessmsi=%tmp%\lessmsi\lessmsi.exe"
 
 if not exist "%lessmsi%" (
 
@@ -181,7 +191,7 @@ if not exist "%lessmsi%" (
 rem  --------------------------------------------------------------------------
 echo Extracting SDK ...
 
-for %%i in (%installers%\*.msi) do (
+for %%i in ("%installers%\*.msi") do (
   echo   %%~ni
   rem  A hack to redirect stdout correctly.
   rem  TODO: check the lessmsi issues on GitHub.
@@ -199,11 +209,11 @@ echo Moving SDK files ...
 
 setlocal EnableDelayedExpansion
 
-for /f "delims=" %%i in ('dir /b /s /a:-D %SourceDir%') do (
+for /f "delims=" %%i in ('dir /b /s /a:-D "%SourceDir%"') do (
 
   set file=%%~nxi
   set from_dir=%%~dpi
-  set to_dir=!from_dir:%SourceDir%=%destination%!
+  set "to_dir=!from_dir:%SourceDir%=%destination%!"
 
   if not exist "!to_dir!" (
     mkdir "!to_dir!"
@@ -217,10 +227,7 @@ for /f "delims=" %%i in ('dir /b /s /a:-D %SourceDir%') do (
 )
 endlocal
 
+
 rd /q /s "%tmp%"
-
-echo Windows SDK installed.
-
-
-:END
+echo Windows SDK is extracted.
 endlocal
