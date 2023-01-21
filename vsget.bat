@@ -1,57 +1,57 @@
 @echo off
 
 rem  --------------------------------------------------------------------------
-rem  Installs portable MSVC v143, MSBuild v170 and Windows SDK v10.0.20348.0 to
-rem  [DESTINATION] dir passed as the first arg.
+rem  Downloads portable MSVC, MSBuild and Windows SDK to destination, specified
+rem  as the first arg.
 rem  --------------------------------------------------------------------------
+
 
 setlocal
 
-rem  v143
+rem  MSVC v143
 set VC_V=14.33.31629
 set VC=vc-x64-x64.%VC_V%
 
-rem  v170
+rem  MSBuild v170
 set MSBUILD_V=17.3.1.2241501
 set MSBUILD=msbuild-x64.%MSBUILD_V%
 
-rem  v10.0.20348.0
-set SDK_URL=https://go.microsoft.com/fwlink/?linkid=2164145
+rem  Windows SDK v10.0.22621.755
+set SDK_URL=https://go.microsoft.com/fwlink/?linkid=2196241
 set SDK_FEATURES=OptionId.DesktopCPPx64
 
 set VCVARS_NAME=vcvars-x64-x64
 
 set root=%~dp0
-set vcvars=%root%tools\%VCVARS_NAME%.bat
 set destination=%~1
+set "vcvars=%root%tools\%VCVARS_NAME%.bat"
 
-if "%destination%"=="" (
+if "%destination%" == "" (
   echo [ERR] Destination is not specified.
   goto :END
 )
 
-rem  Remove trailing backslashes.
-:SANITIZE
-if "%destination:~-1,1%"=="\" (
-  set destination=%destination:~,-1%
-  goto :SANITIZE
+:REMOVE_TRAILING_BACKSLASH
+if "%destination:~-1,1%" == "\" (
+  set "destination=%destination:~,-1%"
+  goto :REMOVE_TRAILING_BACKSLASH
 )
 
 if not exist "%destination%" (
   md "%destination%"
 )
 
-set sdk_destination=%destination%\SDK
+set "sdk_destination=%destination%\SDK"
 
 if not exist "%sdk_destination%" (
   md "%sdk_destination%"
 )
 
-copy "%vcvars%" "%destination%" >NUL
 call "%root%sdk" "%SDK_URL%" "%sdk_destination%" "%SDK_FEATURES%" || goto :END
 call "%root%vsix-get" %VC% "%destination%" || goto :END
 call "%root%vsix-get" %MSBUILD% "%destination%" || goto :END
 call "%root%vsix-unpack" "%destination%" || goto :END
+copy "%vcvars%" "%destination%" >NUL
 
 :END
 endlocal
