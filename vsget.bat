@@ -24,9 +24,15 @@ set SDK_URL=https://go.microsoft.com/fwlink/?linkid=2196240
 
 set VCVARS_NAME=vcvars-x64-x64
 
+
 set root=%~dp0
 set destination=%~1
+
 set "vcvars=%root%tools\%VCVARS_NAME%.bat"
+set "vc_downloader=%root%vsix-downloaders\%VC%.bat"
+set "msbuild_downloader=%root%vsix-downloaders\%MSBUILD%.bat"
+set "sdk_downloader=%root%get-sdk.bat"
+
 
 if "%destination%" == "" (
   echo [ERR][%~n0] Destination is not specified.
@@ -43,9 +49,9 @@ if not exist "%destination%" (
   md "%destination%"
 ) else echo [WARN][%~n0] Already exist: %destination%
 
-call "%root%vsix-get" %VC% "%destination%" || exit /b 1
-call "%root%vsix-get" %MSBUILD% "%destination%" || exit /b 2
-call "%root%vsix-unpack" "%destination%" || exit /b 3
+call "%vc_downloader%" "%destination%" || exit /b 1
+call "%msbuild_downloader%" "%destination%" || exit /b 2
+call "%root%unpack-vsix" "%destination%" || exit /b 3
 copy "%vcvars%" "%destination%" >NUL
-call "%root%get-sdk" "%SDK_URL%" "%destination%\SDK" || exit /b 4
+call "%sdk_downloader%" "%SDK_URL%" "%destination%\SDK" || exit /b 4
 endlocal

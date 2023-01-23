@@ -2,7 +2,7 @@
 
 rem  --------------------------------------------------------------------------
 rem  Using: `uncache [VS CACHE PATH] [GROUP] [PACKAGES ...]`.
-rem  Writes `%root%\vsix-get\%group%.%version%.bat` downloader for specified
+rem  Writes `%root%\vsix-downloaders\%group%.%version%.bat` downloader for specified
 rem  %packages% list from the Visual Studio %cache_path%. A %group% name can be
 rem  arbitrary.
 rem  --------------------------------------------------------------------------
@@ -160,7 +160,7 @@ rem  --- Create batch downloader ----------------------------------------------
 
 echo|set/p=Writing downloader %group%.%version%.bat ... 
 
-set outfile=%root%\vsix-get\%group%.%version%.bat
+set outfile=%root%\vsix-downloaders\%group%.%version%.bat
 
 if exist "%outfile%" (
   echo.
