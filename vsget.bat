@@ -1,10 +1,13 @@
 @echo off
 
 rem  --------------------------------------------------------------------------
-rem  Downloads portable MSVC, MSBuild and Windows SDK to destination, specified
-rem  as the first arg.
+rem  Downloads and extracts MSVC, MSBuild and Windows SDK to [DESTINATION].
+rem
+rem  Using:
+rem
+rem    vsget [DESTINATION]
+rem
 rem  --------------------------------------------------------------------------
-
 
 setlocal
 
@@ -17,8 +20,7 @@ set MSBUILD_V=17.3.1.2241501
 set MSBUILD=msbuild-x64.%MSBUILD_V%
 
 rem  Windows SDK v10.0.22621.755
-set SDK_URL=https://go.microsoft.com/fwlink/?linkid=2196241
-set SDK_FEATURES=OptionId.DesktopCPPx64
+set SDK_URL=https://go.microsoft.com/fwlink/?linkid=2196240
 
 set VCVARS_NAME=vcvars-x64-x64
 
@@ -27,7 +29,7 @@ set destination=%~1
 set "vcvars=%root%tools\%VCVARS_NAME%.bat"
 
 if "%destination%" == "" (
-  echo [ERR] Destination is not specified.
+  echo [ERR][%~n0] Destination is not specified.
   goto :END
 )
 
@@ -39,19 +41,11 @@ if "%destination:~-1,1%" == "\" (
 
 if not exist "%destination%" (
   md "%destination%"
-)
+) else echo [WARN][%~n0] Already exist: %destination%
 
-set "sdk_destination=%destination%\SDK"
-
-if not exist "%sdk_destination%" (
-  md "%sdk_destination%"
-)
-
-call "%root%sdk" "%SDK_URL%" "%sdk_destination%" "%SDK_FEATURES%" || goto :END
-call "%root%vsix-get" %VC% "%destination%" || goto :END
-call "%root%vsix-get" %MSBUILD% "%destination%" || goto :END
-call "%root%vsix-unpack" "%destination%" || goto :END
+call "%root%vsix-get" %VC% "%destination%" || exit /b 1
+call "%root%vsix-get" %MSBUILD% "%destination%" || exit /b 2
+call "%root%vsix-unpack" "%destination%" || exit /b 3
 copy "%vcvars%" "%destination%" >NUL
-
-:END
+call "%root%get-sdk" "%SDK_URL%" "%destination%\SDK" || exit /b 4
 endlocal
