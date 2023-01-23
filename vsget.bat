@@ -24,15 +24,13 @@ set SDK_URL=https://go.microsoft.com/fwlink/?linkid=2196240
 
 set VCVARS_NAME=vcvars-x64-x64
 
-
 set root=%~dp0
 set destination=%~1
-
+set "PATH=%root%utils;%PATH%"
 set "vcvars=%root%tools\%VCVARS_NAME%.bat"
 set "vc_downloader=%root%vsix-downloaders\%VC%.bat"
 set "msbuild_downloader=%root%vsix-downloaders\%MSBUILD%.bat"
 set "sdk_downloader=%root%get-sdk.bat"
-
 
 if "%destination%" == "" (
   echo [ERR][%~n0] Destination is not specified.
