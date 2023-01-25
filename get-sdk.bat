@@ -15,8 +15,6 @@ set sdk_url=%~1
 set destination=%~2
 set "PATH=%root%utils;%root%sdk;%PATH%"
 
-echo Getting the Windows SDK
-
 :REMOVE_TRAILING_BACKSLASH
 if "%destination:~-1,1%" == "\" (
   set "destination=%destination:~,-1%"

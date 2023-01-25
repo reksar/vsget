@@ -1,7 +1,7 @@
 @echo off
 
 rem  --------------------------------------------------------------------------
-rem  Moves the content of each component's SourceDir to %destination%.
+rem  Moves the content from the `SourceDir` of each component to %destination%.
 rem  --------------------------------------------------------------------------
 
 setlocal
@@ -14,7 +14,7 @@ for /d %%i in ("%components%\*") do (
 
   if exist "%%i\SourceDir" (
 
-    robocopy "%%i\SourceDir" "%destination%" * /S /NFL /NDL /NJH /NJS /MOV >NUL
+    robocopy "%%i\SourceDir" "%destination%" * /S /MOV /NFL /NDL /NJH /NJS >NUL
 
     if %ERRORLEVEL% EQU 0 (
       echo   %%~ni
@@ -22,7 +22,10 @@ for /d %%i in ("%components%\*") do (
       echo   [ERR][%~n0] %%~ni
       exit /b 1
     )
+  ) else (
+    echo   [SKIP] %%~ni
   )
   rd /q /s "%%i" || echo [WARN][%~n0] Unable to delete %%i
 )
 endlocal
+exit /b 0
