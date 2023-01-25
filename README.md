@@ -1,52 +1,34 @@
 # vsget
 
-Download MS Visual C++, MS Build and Windows SDK.
+Collects portable MS Visual Studio tools.
 
-**MSVC v143, MSBuild C++ v170, Windows SDK v10.0.20348.0 (x64 -> x64)**
-
-`vc-x64-x64.143.170.20348 <destination>`
-
-## Note
-
-Init the related `<destination>\vcvars*.bat` before using downloaded MS Visual
-Studio tools.
-
-## Get VSIX package
-
-`get [DOWNLOADER] [DESTINATION DIR]`
-
-A `[DOWNLOADER]` can be either full file name `<group>.<version>.bat` or just 
-packages `<group>` name to use latest `<version>` of downloader.
-
-This will download `*.vsix` packages to `[DESTINATION DIR]`.
-
-**Examples:**
 ```bat
-get vc-x64-x64 <destination>
-get msbuild-x64 <destination>
-get msbuild-x64.17.2.1.2225201 <destination>
-get msbuild-x64.17.2.1.2225201.bat <destination>
-get <abspath>\get\msbuild-x64.17.2.1.2225201.bat <destination>
+vsget [DESTINATION]
 ```
 
-# Unpack VSIX packages
+Downloads and unpacks to `[DESTINATION]` without installation:
+* MS Visual C++ v143 *(~ 500 MB)*
+* MS Build v170 *(~ 35 MB)*
+* Windows SDK v10.0.22621.755 *(~ 2.4 GB)*
 
-`unpack <destination>`
+Adds related `vcvars*.bat` to init the environment before using the tools.
 
-Unpack `Contents` of each downloaded `*.vsix` package to `<destination>`.
+## Windows SDK
 
-# Uncache MS Visual Studio component groups
+You can download the Windows SDK separately:
 
-Uncache all: `uncache [MSVS CACHE PATH]`
-
-Uncache specified packages group: `uncache\[GROUP] [MSVS CACHE PATH]`
-
-Uncaching creates `get\[GROUP].<version>.bat` downloaders for spicefied 
-packages `[GROUP]` from specified `[MSVS CACHE PATH]`.
-
-**Examples:**
 ```bat
-uncache <cache path>
-uncache\vc-x64-x64 <cache path>
-uncache\msbuild-x64 <cache path>
+get-sdk [DESTINATION]
 ```
+
+Downloads the ISO, extracts the MSI installers of the SDK components and
+unpacks them into `[DESTINATION]`.
+
+# Uncache MS Visual Studio components
+
+```bat
+uncache-vsix [MSVS CACHE PATH]
+```
+
+Uses the MS Visual Studio cache to generate
+`vsix-downloaders\<group>.<version>.bat`.
