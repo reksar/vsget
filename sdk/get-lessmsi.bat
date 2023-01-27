@@ -17,14 +17,14 @@ set LESSMSI_DOWNLOAD=https://github.com/activescott/lessmsi/releases/download
 set LESSMSI_URL=%LESSMSI_DOWNLOAD%/%LESSMSI_VER%/%LESSMSI_ZIP%
 
 rem  Abs path expected!
-set destination=%~1
+set "destination=%~1"
 set "lessmsi=%destination%\lessmsi.exe"
 
 if not exist "%lessmsi%" (
 
   if not exist "%destination%" (
     md "%destination%"
-  ) else echo [WARN][%~n0] Already exist: %destination%
+  ) else echo [WARN][%~n0] Already exist: "%destination%"
 
   echo|set/p=Downloading lessmsi ... 
   call download "%LESSMSI_URL%" "%destination%\%LESSMSI_ZIP%" || (

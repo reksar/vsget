@@ -28,10 +28,10 @@ if "%destination%" == "" (
 
 if not exist "%destination%" (
   md "%destination%"
-) else echo [WARN][%~n0] Already exist: %destination%
+) else echo [WARN][%~n0] Already exist: "%destination%"
 
 call check-sdk "%destination%" && (
-  echo [ERR][%~n0] SDK already exists in %destination%
+  echo [ERR][%~n0] SDK already exists in "%destination%"
   exit /b 2
 )
 

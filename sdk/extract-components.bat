@@ -5,16 +5,15 @@ rem  Extracts Windows SDK components from MSI installers.
 rem  --------------------------------------------------------------------------
 
 setlocal
-set installers_dir=%~1
-set components_dir=%~2
-set tmp=%~3
+set "installers_dir=%~1"
+set "components_dir=%~2"
+set "tmp=%~3"
 
 
 set "lessmsi_dir=%tmp%\lessmsi"
 set "lessmsi_log=%lessmsi_dir%\lessmsi.log"
 call get-lessmsi "%lessmsi_dir%" || exit /b 1
 set "PATH=%lessmsi_dir%;%PATH%"
-
 
 if exist "%lessmsi_log%" (
   echo [WARN][sdk] Deleting old lessmsi log!

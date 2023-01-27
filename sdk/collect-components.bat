@@ -5,8 +5,8 @@ rem  Moves the content from the `SourceDir` of each component to %destination%.
 rem  --------------------------------------------------------------------------
 
 setlocal
-set components=%~1
-set destination=%~2
+set "components=%~1"
+set "destination=%~2"
 
 echo Collecting SDK components ...
 
