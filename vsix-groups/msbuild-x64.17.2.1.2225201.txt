@@ -1,0 +1,5 @@
+https://download.visualstudio.microsoft.com/download/pr/12645348-9f6f-4d15-b437-b2137b99721c/357c0f4c9be89ebfe3cb1c371c9486efb4ab40ba6e9944ab4ab29bceffa47fee/Microsoft.Build.vsix
+https://download.visualstudio.microsoft.com/download/pr/b1761a53-f7bb-4cd8-849e-39cb53355f65/9025f1f667d6d4e7bc21f1ea66c51a9942f1ed8f996b479396125cc9dc59146d/payload.vsix
+https://download.visualstudio.microsoft.com/download/pr/b1761a53-f7bb-4cd8-849e-39cb53355f65/25d6a66780ebd190facb6de0cf672bfad6fb92267b809434e981420374a4477c/payload.vsix
+https://download.visualstudio.microsoft.com/download/pr/b1761a53-f7bb-4cd8-849e-39cb53355f65/96ed4092eeced6a20b1ab626be07103298ea1d3459b20e86e334446ac3d277bb/payload.vsix
+https://download.visualstudio.microsoft.com/download/pr/b1761a53-f7bb-4cd8-849e-39cb53355f65/fdd2e676ddc82f640d43628f30db31087a54ffb467add970b0bfd815e3b1e375/payload.vsix

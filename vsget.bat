@@ -13,43 +13,25 @@ setlocal
 
 rem  MSVC v143
 set VC_V=14.33.31629
-set VC=vc-x64-x64.%VC_V%
+set VC_GROUP=vc-x64-x64.%VC_V%
 
 rem  MSBuild v170
 set MSBUILD_V=17.3.1.2241501
-set MSBUILD=msbuild-x64.%MSBUILD_V%
+set MSBUILD_GROUP=msbuild-x64.%MSBUILD_V%
 
 rem  Windows SDK v10.0.22621.755
 set SDK_URL=https://go.microsoft.com/fwlink/?linkid=2196240
 
-set VCVARS_NAME=vcvars-x64-x64
+set VCVARS=vcvars-x64-x64
 
 set root=%~dp0
-set destination=%~1
-set "PATH=%root%utils;%PATH%"
-set "vcvars=%root%tools\%VCVARS_NAME%.bat"
-set "vc_downloader=%root%vsix-downloaders\%VC%.bat"
-set "msbuild_downloader=%root%vsix-downloaders\%MSBUILD%.bat"
-set "sdk_downloader=%root%get-sdk.bat"
+where get-sdk >NUL 2>&1 || set "PATH=%root%;%PATH%"
+where destination >NUL 2>&1 || set "PATH=%root%utils;%PATH%"
+call destination "%~1" || exit /b 1
 
-if "%destination%" == "" (
-  echo [ERR][%~n0] Destination is not specified.
-  goto :END
-)
+copy "%root%tools\%VCVARS%.bat" "%destination%" >NUL
+call get-vsix-group %VC_GROUP% "%destination%" || exit /b 2
+call get-vsix-group %MSBUILD_GROUP% "%destination%" || exit /b 3
+call get-sdk "%SDK_URL%" "%destination%\SDK" || exit /b 4
 
-:REMOVE_TRAILING_BACKSLASH
-if "%destination:~-1,1%" == "\" (
-  set "destination=%destination:~,-1%"
-  goto :REMOVE_TRAILING_BACKSLASH
-)
-
-if not exist "%destination%" (
-  md "%destination%"
-) else echo [WARN][%~n0] Already exist: %destination%
-
-call "%vc_downloader%" "%destination%" || exit /b 1
-call "%msbuild_downloader%" "%destination%" || exit /b 2
-call "%root%unpack-vsix" "%destination%" || exit /b 3
-copy "%vcvars%" "%destination%" >NUL
-call "%sdk_downloader%" "%SDK_URL%" "%destination%\SDK" || exit /b 4
 endlocal
