@@ -6,7 +6,7 @@ Collects portable MS Visual Studio tools.
 vsget [DESTINATION]
 ```
 
-Downloads and unpacks to `[DESTINATION]` without installation:
+Downloads and unpacks to `[DESTINATION]` path without installation:
 * MS Visual C++ v143 *(~ 500 MB)*
 * MS Build v170 *(~ 35 MB)*
 * Windows SDK v10.0.22621.755 *(~ 2.4 GB)*
@@ -21,10 +21,12 @@ You can download the Windows SDK separately:
 get-sdk [DESTINATION]
 ```
 
-Downloads the ISO, extracts the MSI installers of the SDK components and
-unpacks them into `[DESTINATION]`.
+Downloads the ISO, extracts the MSI installers (with related CAB files) of the
+SDK components and unpacks them into `[DESTINATION]`.
 
 # Uncache MS Visual Studio components
+
+**NOTE: it is broken at the moment!**
 
 ```bat
 uncache-vsix [MSVS CACHE PATH]

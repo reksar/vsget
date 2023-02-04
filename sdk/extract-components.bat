@@ -1,59 +1,61 @@
 @echo off
 
 rem  --------------------------------------------------------------------------
-rem  Extracts Windows SDK components from MSI installers.
+rem  Extracts the Windows SDK Components from the [INSTALLERS] dir (MSI and CAB
+rem  files) to [COMPONENTS] dir. The [COMPONENTS] dir will contain subdirs
+rem  corresponding to each MSI.
+rem
+rem  Using:
+rem
+rem    extract-components [INSTALLERS] [COMPONENTS]
+rem
 rem  --------------------------------------------------------------------------
 
 setlocal
-set "installers_dir=%~1"
-set "components_dir=%~2"
-set "tmp=%~3"
 
+set installers=%~1
+set components=%~2
 
-set "lessmsi_dir=%tmp%\lessmsi"
-set "lessmsi_log=%lessmsi_dir%\lessmsi.log"
-call get-lessmsi "%lessmsi_dir%" || exit /b 1
-set "PATH=%lessmsi_dir%;%PATH%"
+where lessmsi >NUL 2>&1 || (
+  echo [ERR][%~n0] Requires `lessmsi`!
+  exit /b 1
+)
+
+rem  Only used to suppress output from `lessmsi` to stdout.
+set "lessmsi_log=%components%\lessmsi.log"
 
 if exist "%lessmsi_log%" (
-  echo [WARN][sdk] Deleting old lessmsi log!
-  del "%lessmsi_log%"
+  del /q /s "%lessmsi_log%" >NUL 2>&1 && (
+    echo [WARN][%~n0] The old "%lessmsi_log%" has been deleted!
+  ) || (
+    echo [WARN][%~n0] Failed to delete "%lessmsi_log%"!
+  )
 )
 
-
-echo Extracting SDK components ...
-
-rem  NOTE: `lessmsi` has issues with path name encoding: only Latin symbols are
-rem  available for the target dir for extraction. When a path name error
-rem  occurs, `lessmsi` uses the %CD% path instead.
-rem
-rem  Changing %CD% instead of passing the target dir arg to `lessmsi` to
-rem  achieve the same effect even on path name error.
+rem  To prevent `lessmsi` path errors.
 set "origin_path=%CD%"
-if not exist "%components_dir%" md "%components_dir%"
-cd "%components_dir%"
+if not exist "%components%" md "%components%"
+cd "%components%"
 
-for %%i in ("%installers_dir%\*.msi") do (
+echo   Extracting SDK Components
 
-  if not exist "%components_dir%\%%~ni" (
-
-    echo   %%~ni
-
-    rem  NOTE: suppressing output by redirecting the to %lessmsi_log%.
+for %%i in ("%installers%\*.msi") do (
+  if not exist "%components%\%%~ni" (
+    echo     %%~ni
     lessmsi x "%%i" >> "%lessmsi_log%" || (
-      echo [ERR][%~n0] Unable to extract SDK component from MSI!
+      echo [ERR][%~n0] Unable to extract SDK Component!
+      cd "%origin_path%"
       exit /b 2
     )
-  ) else echo   [WARN][%~n0] %%~ni already exist!
+  ) else echo     [WARN] Already exists: %%~ni
 )
 
-rem  Duplicates may be created by `lessmsi` during MSI extraction.
+rem  Duplicates may be created during MSI extraction.
 del /q /s *.duplicate* >NUL 2>&1
 
 cd "%origin_path%"
 
-call check-components "%components_dir%" "%installers_dir%" || (
-  echo [ERR][%~n0] Unable to extract SDK components!
-  exit /b 3
-)
+del /q /s "%lessmsi_log%" >NUL 2>&1
+rd /q /s "%installers%" >NUL 2>&1
+
 endlocal

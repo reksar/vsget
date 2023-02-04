@@ -1,9 +1,16 @@
 @echo off
-rem  https://gist.github.com/reksar/f6112cf70d979fd7570eec04def4bb28
+
 setlocal
+
 set zip=%~1
 set destination=%~2
-rem  Requires powershell v5+
-call powershell -command ^
-  "Expand-Archive '%zip%' -DestinationPath '%destination%'"
+
+where 7z >NUL 2>&1 && (
+  7z x -y -o"%destination%" "%zip%" >NUL || exit /b 1
+) || (
+  rem  Requires `powershell` v5+
+  call powershell -command ^
+    "Expand-Archive '%zip%' -DestinationPath '%destination%'" || exit /b 1
+)
+
 endlocal

@@ -12,69 +12,54 @@ rem  --------------------------------------------------------------------------
 
 setlocal
 
-set url=%~1
-
 where destination >NUL 2>&1 || set "PATH=%~dp0utils;%PATH%"
 
+set url=%~1
 call destination "%~2" || exit /b 1
-set "destination_dir=%destination%"
 
-call destination "%destination_dir%\tmp" || exit /b 2
-set "tmp_dir=%destination%"
+set "tmp=%destination%\tmp"
 
-call destination "%tmp_dir%\vsix" || exit /b 3
-set "vsix_dir=%destination%"
-
-for /f %%i in ('call vsix-base-name "%url%"') do (
-  set vsix_name=%%i
-)
+for /f %%i in ('call vsix-base-name "%url%"') do set vsix_name=%%i
 
 echo - Getting %vsix_name%
 
-set "vsix=%vsix_dir%\%vsix_name%.zip"
+set "vsix=%tmp%\vsix"
+if not exist "%vsix%" md "%vsix%"
 
-if not exist "%vsix%" (
-  echo|set/p=--- Downloading ...
-  call download "%url%" "%vsix%" || (
+set "vsix_zip=%vsix%\%vsix_name%.zip"
+
+if not exist "%vsix_zip%" (
+  echo|set/p=-   Downloading ... 
+  call download "%url%" "%vsix_zip%" || (
     echo FAIL
     exit /b 4
   )
   echo OK
-) else echo --- [WARN] %vsix_name%.zip already exist!
+) else echo -   [WARN] %vsix_name%.zip already exist!
 
-call destination "%vsix_dir%\extracted" || exit /b 5
-set "extracted_dir=%destination%"
+set "extracted=%vsix%\extracted"
+if not exist "%extracted%" md "%extracted%"
 
-where 7z >NUL 2>&1 || (
-  echo|set/p=--- Extracting with deprecated `unzip` ... 
-  call unzip "%vsix%" "%extracted_dir%" || (
-    echo FAIL
-    exit /b 6
-  )
-  echo OK
-  goto :MOVE_CONTENTS
-)
-
-echo|set/p=--- Extracting ... 
-7z x -y -o"%extracted_dir%" "%vsix%" || (
+echo|set/p=-   Extracting ... 
+call unzip "%vsix_zip%" "%extracted%" || (
   echo FAIL
   exit /b 6
 )
 echo OK
 
-:MOVE_CONTENTS
-robocopy "%extracted_dir%\Contents" "%destination_dir%" * ^
+robocopy "%extracted%\Contents" "%destination%" * ^
   /S /MOV /NFL /NDL /NJH /NJS >NUL
-rd /s /q "%extracted_dir%"
-del "%vsix%"
 
-for %%i in ("%vsix_dir%\*") do goto :SKIP_RD_VSIX
-rd /s /q "%vsix_dir%"
+rd /s /q "%extracted%" >NUL 2>&1
+del "%vsix_zip%" >NUL 2>&1
+
+for %%i in ("%vsix%\*") do goto :SKIP_RD_VSIX
+rd /s /q "%vsix%" >NUL 2>&1
 :SKIP_RD_VSIX
 
-for %%i in ("%tmp_dir%\*") do goto :SKIP_RD_TMP
-for /d %%i in ("%tmp_dir%\*") do goto :SKIP_RD_TMP
-rd /s /q "%tmp_dir%"
+for %%i in ("%tmp%\*") do goto :SKIP_RD_TMP
+for /d %%i in ("%tmp%\*") do goto :SKIP_RD_TMP
+rd /s /q "%tmp%" >NUL 2>&1
 :SKIP_RD_TMP
 
 endlocal

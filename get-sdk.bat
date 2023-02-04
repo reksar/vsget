@@ -1,7 +1,8 @@
 @echo off
 
 rem  --------------------------------------------------------------------------
-rem  Downloads the Windows SDK from specified [URL] to [DESTINATION].
+rem  Downloads the Windows SDK ISO from the specified [URL] and extracts the
+rem  SDK Components to [DESTINATION].
 rem
 rem  Using:
 rem
@@ -10,48 +11,45 @@ rem
 rem  --------------------------------------------------------------------------
 
 setlocal
-set root=%~dp0
-set sdk_url=%~1
-set destination=%~2
-set "PATH=%root%utils;%root%sdk;%PATH%"
 
-:REMOVE_TRAILING_BACKSLASH
-if "%destination:~-1,1%" == "\" (
-  set "destination=%destination:~,-1%"
-  goto :REMOVE_TRAILING_BACKSLASH
+where destination >NUL 2>&1 || set "PATH=%~dp0utils;%PATH%"
+where check-components >NUL 2>&1 || set "PATH=%~dp0sdk;%PATH%"
+
+set url=%~1
+call destination "%~2" || exit /b 1
+call check-components "%destination%" && (
+  echo [WARN][%~n0] SDK already exist!
+  exit /b 0
 )
-
-if "%destination%" == "" (
-  echo [ERR][%~n0] Destination is not specified.
-  exit /b 1
-)
-
-if not exist "%destination%" (
-  md "%destination%"
-) else echo [WARN][%~n0] Already exist: "%destination%"
-
-call check-sdk "%destination%" && (
-  echo [ERR][%~n0] SDK already exists in "%destination%"
-  exit /b 2
-)
+echo Getting Windows SDK
 
 set "tmp=%destination%\tmp"
 
-set "components=%tmp%\components"
-call check-components "%components%" "%installers%" && goto :COLLECT
+set "archiver=%tmp%\7-zip"
+call ensure-archiver "%archiver%"
 
 set "installers=%tmp%\installers"
-call get-installers "%sdk_url%" "%installers%" || exit /b 3
-call extract-components "%installers%" "%components%" "%tmp%" || exit /b 4
-
-:COLLECT
-call collect-components "%components%" "%destination%" || exit /b 5
-
-call check-sdk "%destination%" || (
-  echo [ERR][%~n0] Unable to collect the Windows SDK components!
-  exit /b 6
+call check-installers "%installers%" && (
+  echo [WARN][%~n0] SDK Installers already exists!
+  goto :COMPONENTS
 )
 
-rd /q /s "%tmp%" || echo [WARN][%~n0] Unable to delete %tmp%
-echo Windows SDK ready.
+set "iso=%tmp%\sdk.iso"
+call get-iso "%url%" "%iso%" || exit /b 2
+call extract-installers "%iso%" "%installers%" || exit /b 3
+
+:COMPONENTS
+set "lessmsi=%tmp%\lessmsi"
+call ensure-lessmsi "%lessmsi%" || exit /b 4
+set "components=%tmp%\components"
+call extract-components "%installers%" "%components%" || exit /b 5
+call collect-components "%components%" "%destination%" || exit /b 6
+call check-components "%destination%" || (
+  echo [ERR][%~n0] Failed to get Windows SDK!
+  exit /b 7
+)
+
+rd /q /s "%tmp%" >NUL 2>&1 || echo [WARN][%~n0] Unable to delete "%tmp%"!
+
+echo.
 endlocal

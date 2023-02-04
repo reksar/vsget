@@ -1,28 +1,33 @@
 @echo off
 
+rem  --------------------------------------------------------------------------
+rem  Extracts the Windows SDK Installers from the [ISO] to the [INSTALLERS] dir.
+rem
+rem  Using:
+rem
+rem    extract-installers [ISO] [INSTALLERS]
+rem  --------------------------------------------------------------------------
+
 setlocal
 
-set sdk_iso=%~1
-set installers_dir=%~2
+set iso=%~1
+set installers=%~2
 
-for /f %%i in ('call drive-mount "%sdk_iso%"') do (
-  set "device_path=%%i"
-)
-
-for /f %%i in ('call drive-letter "%device_path%"') do (
-  set "drive=%%i"
-)
-
-echo|set/p=Extracting SDK installers ... 
-
-for %%i in ("%drive%:\Installers\*") do (
-  copy "%%i" "%installers_dir%" >NUL || (
+where 7z >NUL 2>&1 && (
+  echo|set/p=- Extracting SDK Installers ... 
+  set files=Installers\*.msi Installers\*.cab
+  7z e -y -o"%installers%" "%iso%" -r %files% >NUL || (
     echo FAIL
     exit /b 1
   )
+  echo OK
+  goto :END
 )
-echo OK
 
-call drive-umount "%device_path%"
+call extract-installers-from-drive "%iso%" "%installers%" || exit /b 1
+
+:END
+del /q /s "%iso%" >NUL 2>&1 || echo [WARN][%~n0] Unable to delete "%iso%"!
+exit /b 0
 
 endlocal
