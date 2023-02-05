@@ -24,7 +24,7 @@ where destination >NUL 2>&1 || set "PATH=%~dp0;%PATH%"
 call destination "%~1" || exit /b 1
 
 echo.
-echo Getting the lessmsi
+echo Getting lessmsi
 
 echo|set/p=- Downloading ... 
 call download "%LESSMSI_URL%" "%destination%\%LESSMSI_ZIP%" || (

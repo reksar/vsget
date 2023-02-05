@@ -32,5 +32,4 @@ SDK components and unpacks them into `[DESTINATION]`.
 uncache-vsix [MSVS CACHE PATH]
 ```
 
-Uses the MS Visual Studio cache to generate
-`vsix-downloaders\<group>.<version>.bat`.
+Uses the MS Visual Studio cache to generate `vsix-groups\*.txt` files.

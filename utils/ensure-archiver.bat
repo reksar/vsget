@@ -18,7 +18,7 @@ goto :SET_PATH
 
 :GET
 echo.
-echo Getting the 7-zip archiver
+echo Getting 7-zip archiver
 
 setlocal
 
@@ -50,11 +50,11 @@ cd "%destination%"
 rem  Makes utils available after `cd` when the %origin_path% is %~dp0.
 where download >NUL 2>&1 || set "PATH=%~dp0;%PATH%"
 
-echo|set/p=- Getting the 7-zip self-extracting archive ... 
+echo|set/p=- Getting 7-zip self-extracting archive ... 
 call download "%MAIN_URL%" "%ARCHIVE%" || goto :FAIL
 echo OK
 
-echo|set/p=- Getting the util archiver ... 
+echo|set/p=- Getting util archiver ... 
 call download "%UTIL_URL%" "%UTIL%" || goto :FAIL
 echo OK
 

@@ -32,13 +32,13 @@ for /f %%i in ('dir /b /a:d "%VSINSTALLDIR%Msbuild\Microsoft\VC\v*"') do (
   set v=%%i
 )
 
-if "%v%" == "" (
+if not "%v%" == "" (
+  rem  Convert "v170" to "170".
+  set v=%v:~1%
+) else (
   echo [WARN][%~n0] Can't find any MSBuild props for MSVC.
   goto :SDK
 )
-
-rem  "v170" to "170"
-set v=%v:~1%
 
 
 rem  When %DisableRegistryUse% is true:
@@ -48,7 +48,7 @@ rem  - sets the `VCToolsInstallDir` in MSBuild props
 set "VCToolsInstallDir_%v%=%VCToolsInstallDir%"
 
 
-rem  Pick the latest dir in the Windows Kits.
+rem  Pick the latest dir in the `Windows Kits`.
 for /f %%i in ('dir /b /a:d "%VSINSTALLDIR%SDK\Windows Kits"') do (
   set "WindowsSDKDir=%VSINSTALLDIR%SDK\Windows Kits\%%i\"
 )

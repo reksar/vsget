@@ -37,18 +37,20 @@ set "origin_path=%CD%"
 if not exist "%components%" md "%components%"
 cd "%components%"
 
-echo   Extracting SDK Components
+echo - Extracting SDK Components
 
 for %%i in ("%installers%\*.msi") do (
   if not exist "%components%\%%~ni" (
-    echo     %%~ni
+    echo -   %%~ni
     lessmsi x "%%i" >> "%lessmsi_log%" || (
       echo [ERR][%~n0] Unable to extract SDK Component!
       cd "%origin_path%"
       exit /b 2
     )
-  ) else echo     [WARN] Already exists: %%~ni
+  ) else echo -   [WARN] Already exist: %%~ni
 )
+
+echo.
 
 rem  Duplicates may be created during MSI extraction.
 del /q /s *.duplicate* >NUL 2>&1

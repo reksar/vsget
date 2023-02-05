@@ -30,22 +30,28 @@ where get-vsix-group >NUL 2>&1 || set "PATH=%root%;%PATH%"
 where destination >NUL 2>&1 || set "PATH=%root%utils;%PATH%"
 
 call destination "%~1" || exit /b 1
-
 set "tmp=%destination%\tmp"
-call ensure-archiver "%tmp%\7-zip"
-
-copy "%root%tools\%VCVARS%.bat" "%destination%" >NUL
+set "archiver=%tmp%\7-zip"
 
 if not exist "%destination%\VC" (
+  call ensure-archiver "%archiver%"
   call get-vsix-group "%VC_GROUP%" "%destination%" || exit /b 2
 ) else echo [WARN][%~n0] VC already exist!
 
 if not exist "%destination%\MSBuild" (
+  call ensure-archiver "%archiver%"
   call get-vsix-group "%MSBUILD_GROUP%" "%destination%" || exit /b 3
 ) else echo [WARN][%~n0] MSBuild already exist!
 
-call get-sdk "%SDK_URL%" "%destination%\SDK" || exit /b 4
+copy "%root%vs-tools\%VCVARS%.bat" "%destination%" >NUL 2>&1 || (
+  echo [ERR][%~n0] Unable to copy vcvars!
+  exit /b 4
+)
 
-rd /q /s "%tmp%" >NUL 2>&1 || echo [WARN][%~n0] Unable to delete "%tmp%"!
+call get-sdk "%SDK_URL%" "%destination%\SDK" || exit /b 5
+
+if exist "%tmp%" (
+  rd /q /s "%tmp%" >NUL 2>&1 || echo [WARN][%~n0] Unable to delete "%tmp%"!
+)
 
 endlocal

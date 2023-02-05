@@ -9,20 +9,20 @@ setlocal
 set components=%~1
 set destination=%~2
 
-echo   Collecting SDK components
+echo - Collecting SDK components
 
 for /d %%i in ("%components%\*") do (
 
   if exist "%%i\SourceDir" (
 
-    echo     %%~ni
+    echo -   %%~ni
     robocopy "%%i\SourceDir" "%destination%" * /S /MOV /NFL /NDL /NJH /NJS >NUL
 
     if %ERRORLEVEL% NEQ 0 (
       echo   [ERR][%~n0] Unable to move SDK Component!
       exit /b 1
     )
-  ) else echo     [SKIP] %%~ni
+  ) else echo -   [SKIP] %%~ni
 
   rd /q /s "%%i" >NUL 2>&1 || echo [WARN][%~n0] Unable to delete %%i
 )
