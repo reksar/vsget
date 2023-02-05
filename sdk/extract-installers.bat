@@ -13,7 +13,7 @@ setlocal
 set iso=%~1
 set installers=%~2
 
-where 7z >NUL 2>&1 && (
+call which 7z >NUL 2>&1 && (
   echo|set/p=- Extracting SDK Installers ... 
   set files=Installers\*.msi Installers\*.cab
   7z e -y -o"%installers%" "%iso%" -r %files% >NUL || (

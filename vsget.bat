@@ -26,8 +26,8 @@ set VCVARS=vcvars-x64-x64
 
 set root=%~dp0
 
-where get-vsix-group >NUL 2>&1 || set "PATH=%root%;%PATH%"
-where destination >NUL 2>&1 || set "PATH=%root%utils;%PATH%"
+call which which >NUL 2>&1 || set "PATH=%root%utils;%PATH%"
+call which get-vsix-group >NUL 2>&1 || set "PATH=%root%;%PATH%"
 
 call destination "%~1" || exit /b 1
 set "tmp=%destination%\tmp"

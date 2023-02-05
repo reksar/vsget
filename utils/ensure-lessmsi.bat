@@ -9,7 +9,7 @@ rem    ensure-lessmsi [DESTINATION]
 rem
 rem  --------------------------------------------------------------------------
 
-where lessmsi >NUL 2>&1 && exit /b 0
+call which lessmsi >NUL 2>&1 && exit /b 0
 if exist "%~1\lessmsi.exe" goto :SET_PATH
 
 setlocal
@@ -20,7 +20,7 @@ set LESSMSI_DOWNLOAD=https://github.com/activescott/lessmsi/releases/download
 set LESSMSI_URL=%LESSMSI_DOWNLOAD%/%LESSMSI_VER%/%LESSMSI_ZIP%
 
 rem  Abs path expected!
-where destination >NUL 2>&1 || set "PATH=%~dp0;%PATH%"
+call which which >NUL 2>&1 || set "PATH=%~dp0;%PATH%"
 call destination "%~1" || exit /b 1
 
 echo.

@@ -12,8 +12,8 @@ rem  --------------------------------------------------------------------------
 
 setlocal
 
-where destination >NUL 2>&1 || set "PATH=%~dp0utils;%PATH%"
-where check-components >NUL 2>&1 || set "PATH=%~dp0sdk;%PATH%"
+call which which >NUL 2>&1 || set "PATH=%~dp0utils;%PATH%"
+call which check-components >NUL 2>&1 || set "PATH=%~dp0sdk;%PATH%"
 
 set url=%~1
 call destination "%~2" || exit /b 1

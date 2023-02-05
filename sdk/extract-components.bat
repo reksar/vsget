@@ -16,7 +16,7 @@ setlocal
 set installers=%~1
 set components=%~2
 
-where lessmsi >NUL 2>&1 || (
+call which lessmsi >NUL 2>&1 || (
   echo [ERR][%~n0] Requires `lessmsi`!
   exit /b 1
 )

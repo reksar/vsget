@@ -12,7 +12,7 @@ rem  --------------------------------------------------------------------------
 
 setlocal
 
-where destination >NUL 2>&1 || set "PATH=%~dp0utils;%PATH%"
+call which which >NUL 2>&1 || set "PATH=%~dp0utils;%PATH%"
 
 set url=%~1
 call destination "%~2" || exit /b 1

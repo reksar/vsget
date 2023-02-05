@@ -10,7 +10,7 @@ rem    ensure-archiver [DESTINATION]
 rem
 rem  --------------------------------------------------------------------------
 
-where 7z >NUL 2>&1 && exit /b 0
+call which 7z >NUL 2>&1 && exit /b 0
 
 if not exist "%~1\7z.exe" goto :GET
 if not exist "%~1\7z.dll" goto :GET
@@ -23,7 +23,7 @@ echo Getting 7-zip archiver
 setlocal
 
 echo|set/p=- Ensuring destination path exists ... 
-where destination >NUL 2>&1 || set "PATH=%~dp0;%PATH%"
+call which destination >NUL 2>&1 || set "PATH=%~dp0;%PATH%"
 call destination "%~1" || exit /b 1
 echo OK
 
@@ -48,7 +48,7 @@ set "origin_path=%CD%"
 cd "%destination%"
 
 rem  Makes utils available after `cd` when the %origin_path% is %~dp0.
-where download >NUL 2>&1 || set "PATH=%~dp0;%PATH%"
+call which download >NUL 2>&1 || set "PATH=%~dp0;%PATH%"
 
 echo|set/p=- Getting 7-zip self-extracting archive ... 
 call download "%MAIN_URL%" "%ARCHIVE%" || goto :FAIL
