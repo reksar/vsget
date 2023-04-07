@@ -1,11 +1,9 @@
 @echo off
 
 rem  --------------------------------------------------------------------------
-rem  Downloads and extracts MSVC, MSBuild and Windows SDK to [DESTINATION].
+rem  Download and extract MSVC, MSBuild and Windows SDK to {destination}:
 rem
-rem  Using:
-rem
-rem    vsget [DESTINATION]
+rem    vsget {destination}
 rem
 rem  --------------------------------------------------------------------------
 
