@@ -2,7 +2,9 @@
 
 rem  --------------------------------------------------------------------------
 rem  Init portable MS Visual C++ env vars.
-rem  NOTE: trailing backslashes in paths is for compability with MSBuild props.
+rem
+rem  NOTE: Trailing backslashes in paths are intented to be compatible with
+rem  MSBuild props.
 rem  --------------------------------------------------------------------------
 
 set Platform=x64
@@ -54,7 +56,8 @@ for /f %%i in ('dir /b /a:d "%VSINSTALLDIR%SDK\Windows Kits"') do (
 )
 
 
-rem  --- Detect Windows SDK version -------------------------------------------
+rem  --- Detect Windows SDK ---------------------------------------------------
+
 :SDK
 
 rem  Pick the latest common version for Lib and Include.
@@ -74,17 +77,18 @@ set find_bin=findstr /p /n /e /c:"\.exe"
 
 if exist "%SDKBin%" (
   for /f "tokens=1 delims=:" %%i in ('%list_bin% ^| %find_bin%') do (
-    if %%i GTR 0 goto :SET_VARS
+    if %%i GTR 0 goto :MAIN_VARS
   )
 ) else (
   echo [WARN][%~n0] No binaries for Windows SDK %SDKVersion%
-  goto :SET_VARS
+  goto :MAIN_VARS
 )
 echo [WARN][%~n0] Too few binaries for Windows SDK %SDKVersion%
 
 
-rem  --- Set main vars --------------------------------------------------------
-:SET_VARS
+rem  --------------------------------------------------------------------------
+
+:MAIN_VARS
 
 set "SDKInclude=%WindowsSDKDir%Include\%SDKVersion%\"
 set "WindowsSDK_IncludePath=%SDKInclude%ucrt\"

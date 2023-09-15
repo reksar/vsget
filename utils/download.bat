@@ -1,9 +1,9 @@
 @echo off
 
 rem  --------------------------------------------------------------------------
-rem  Downloads content from {url} to {outfile} (must be an abs path):
+rem  Downloads content from [url] to [outfile] (abs path):
 rem
-rem    download {url} {outfile}
+rem    download [url] [outfile]
 rem
 rem  --------------------------------------------------------------------------
 

@@ -2,11 +2,11 @@
 
 rem  --------------------------------------------------------------------------
 rem  Downloads the VSIX package of a MSVC component, extracts the `Contents` to
-rem  [DESTINATION].
+rem  [destination].
 rem
 rem  Using:
 rem
-rem    get-vsix [VSIX URL] [DESTINATION]
+rem    get-vsix [VSIX URL] [destination]
 rem
 rem  --------------------------------------------------------------------------
 

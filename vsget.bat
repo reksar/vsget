@@ -1,9 +1,9 @@
 @echo off
 
 rem  --------------------------------------------------------------------------
-rem  Download and extract MSVC, MSBuild and Windows SDK to {destination}:
+rem  Download and extract MSVC, MSBuild and Windows SDK to [destination]:
 rem
-rem    vsget {destination}
+rem    vsget [destination]
 rem
 rem  --------------------------------------------------------------------------
 

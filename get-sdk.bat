@@ -1,12 +1,12 @@
 @echo off
 
 rem  --------------------------------------------------------------------------
-rem  Downloads the Windows SDK ISO from the specified [URL] and extracts the
-rem  SDK Components to [DESTINATION].
+rem  Downloads the Windows SDK ISO from the specified [url] and extracts the
+rem  SDK Components to [destination].
 rem
 rem  Using:
 rem
-rem    get-sdk [URL] [DESTINATION]
+rem    get-sdk [url] [destination]
 rem
 rem  --------------------------------------------------------------------------
 
