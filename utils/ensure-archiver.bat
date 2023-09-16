@@ -1,22 +1,21 @@
 @echo off
 
 rem  --------------------------------------------------------------------------
-rem  If the `7z` executable (console 7-zip archiver) is not found, downloads
-rem  7-zip to [DESTINATION] and adds [DESTINATION] to %PATH%.
+rem  If the `7z` executable (console version of the 7-zip archiver) is not
+rem  found, downloads 7-zip to [destination] and adds [destination] to %PATH%.
 rem
 rem  Using:
 rem
-rem    ensure-archiver [DESTINATION]
-rem
+rem    ensure-archiver [destination]
 rem  --------------------------------------------------------------------------
 
 call which 7z >NUL 2>&1 && exit /b 0
 
-if not exist "%~1\7z.exe" goto :GET
-if not exist "%~1\7z.dll" goto :GET
+if not exist "%~1\7z.exe" goto :GET_ARCHIVER
+if not exist "%~1\7z.dll" goto :GET_ARCHIVER
 goto :SET_PATH
 
-:GET
+:GET_ARCHIVER
 echo.
 echo Getting 7-zip archiver
 
@@ -43,9 +42,9 @@ rem  self-extracting archive via command line.
 set "UTIL=7zr.exe"
 set "UTIL_URL=%URL_PREFIX%/%UTIL%"
 
-rem  To prevent errors due to path encoding.
+rem  Prevent path encoding errors.
 set "origin_path=%CD%"
-cd "%destination%"
+cd /d "%destination%"
 
 rem  Makes utils available after `cd` when the %origin_path% is %~dp0.
 call which download >NUL 2>&1 || set "PATH=%~dp0;%PATH%"
