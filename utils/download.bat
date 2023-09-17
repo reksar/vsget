@@ -42,14 +42,14 @@ call which curl >NUL 2>&1 || (
   "%bin_dir%\curl" --version >NUL 2>&1 && set "PATH=%bin_dir%;%PATH%"
 )
 call which curl >NUL 2>&1 && (
-  call curl %url% --output "%outfile%" --silent ^
+  curl %url% --output "%outfile%" --silent ^
     && exit /b 0 ^
     || exit /b 1
 )
 
 rem  * MS JScript
 call which cscript >NUL 2>&1 && (
-  call cscript /nologo "%root%download.js" "%url%" "%outfile%" >NUL 2>&1 ^
+  cscript /nologo "%root%download.js" "%url%" "%outfile%" >NUL 2>&1 ^
     && exit /b 0
 )
 
@@ -58,7 +58,7 @@ rem  TODO: check if `WebRequest` is available.
 set silent=Set-Variable ProgressPreference SilentlyContinue
 set request=Invoke-WebRequest -UseBasicParsing -Uri '%url%' -OutFile '%outfile%'
 call which powershell >NUL 2>&1 && (
-  call powershell -command "%silent% ; %request%" >NUL 2>&1 ^
+  powershell -command "%silent% ; %request%" >NUL 2>&1 ^
     && exit /b 0 ^
     || exit /b 1
 )
