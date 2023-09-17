@@ -49,17 +49,16 @@ call which curl >NUL 2>&1 && (
 
 rem  * MS JScript
 call which cscript >NUL 2>&1 && (
-  call cscript /nologo "%root%download.js" "%url%" "%outfile%" ^
-    >NUL 2>&1 ^
+  call cscript /nologo "%root%download.js" "%url%" "%outfile%" >NUL 2>&1 ^
     && exit /b 0
 )
 
 rem  * PowerShell
+rem  TODO: check if `WebRequest` is available.
+set silent=Set-Variable ProgressPreference SilentlyContinue
+set request=Invoke-WebRequest -UseBasicParsing -Uri '%url%' -OutFile '%outfile%'
 call which powershell >NUL 2>&1 && (
-  rem  TODO: check if `WebRequest` is available.
-  call powershell -command ^
-    "Invoke-WebRequest -UseBasicParsing -Uri '%url%' -OutFile '%outfile%'" ^
-    >NUL 2>&1 ^
+  call powershell -command "%silent% ; %request%" >NUL 2>&1 ^
     && exit /b 0 ^
     || exit /b 1
 )
