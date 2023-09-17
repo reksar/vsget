@@ -42,7 +42,9 @@ call which curl >NUL 2>&1 || (
   "%bin_dir%\curl" --version >NUL 2>&1 && set "PATH=%bin_dir%;%PATH%"
 )
 call which curl >NUL 2>&1 && (
-  curl %url% --output "%outfile%" --silent ^
+  curl --silent --location ^
+    --user-agent "Mozilla/4.0 (compatible; Win32; WinHttp.WinHttpRequest.5)" ^
+    --output "%outfile%" "%url%" ^
     && exit /b 0 ^
     || exit /b 1
 )
