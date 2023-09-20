@@ -1,8 +1,8 @@
 @echo off
 
 rem  --------------------------------------------------------------------------
-rem  Sets the %destination% var without trailing backslash and creates the
-rem  associated dir if needed.
+rem  Ensures the %destination% is set to an absolute path without trailing
+rem  backslashes and creates the corresponding dir if necessary.
 rem  --------------------------------------------------------------------------
 
 set destination=%~1
@@ -23,6 +23,11 @@ if "%destination%" == "" (
   exit /b 2
 )
 
-if not exist "%destination%" md "%destination%"
+for %%i in ("%destination%") do set "destination=%%~fi"
+
+if not exist "%destination%" md "%destination%" || (
+  echo [ERR][%~n0] Unable to create "%destination%"!
+  exit /b 3
+)
 
 exit /b 0

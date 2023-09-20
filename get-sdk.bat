@@ -17,13 +17,15 @@ call which check-components >NUL 2>&1 || set "PATH=%~dp0sdk;%PATH%"
 
 set url=%~1
 call destination "%~2" || exit /b 1
+
 call check-components "%destination%" && (
   echo [WARN][%~n0] SDK already exist!
   exit /b 0
 )
+
 echo Getting Windows SDK
 
-for %%i in ("%destination%") do set "tmp=%%~fi\tmp"
+set "tmp=%destination%\tmp"
 
 set "archiver=%tmp%\7-zip"
 call ensure-archiver "%archiver%"
@@ -39,8 +41,7 @@ call get-iso "%url%" "%iso%" || exit /b 2
 call extract-installers "%iso%" "%installers%" || exit /b 3
 
 :COMPONENTS
-set "lessmsi=%tmp%\lessmsi"
-call ensure-lessmsi "%lessmsi%" || exit /b 4
+call ensure-lessmsi "%tmp%\lessmsi" || exit /b 4
 set "components=%tmp%\components"
 call extract-components "%installers%" "%components%" || exit /b 5
 call collect-components "%components%" "%destination%" || exit /b 6
