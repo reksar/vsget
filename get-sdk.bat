@@ -23,7 +23,7 @@ call check-components "%destination%" && (
 )
 echo Getting Windows SDK
 
-set "tmp=%destination%\tmp"
+for %%i in ("%destination%") do set "tmp=%%~fi\tmp"
 
 set "archiver=%tmp%\7-zip"
 call ensure-archiver "%archiver%"

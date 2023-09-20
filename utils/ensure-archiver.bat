@@ -76,5 +76,5 @@ echo.
 endlocal
 
 :SET_PATH
-set "PATH=%~1;%PATH%"
+set "PATH=%~f1;%PATH%"
 exit /b 0

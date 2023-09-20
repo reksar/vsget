@@ -5,8 +5,7 @@ rem  Third-party util for extracting *.MSI content without its installation.
 rem
 rem  Using:
 rem
-rem    ensure-lessmsi [DESTINATION]
-rem
+rem    ensure-lessmsi [destination]
 rem  --------------------------------------------------------------------------
 
 call which lessmsi >NUL 2>&1 && exit /b 0
@@ -49,5 +48,5 @@ echo.
 endlocal
 
 :SET_PATH
-set "PATH=%~1;%PATH%"
+set "PATH=%~f1;%PATH%"
 exit /b 0

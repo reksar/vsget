@@ -1,7 +1,8 @@
 @echo off
 
 rem  --------------------------------------------------------------------------
-rem  Sets the %destination% var and creates the associated dir if needed.
+rem  Sets the %destination% var without trailing backslash and creates the
+rem  associated dir if needed.
 rem  --------------------------------------------------------------------------
 
 set destination=%~1
