@@ -3,8 +3,8 @@
 rem  --------------------------------------------------------------------------
 rem  Init portable MS Visual C++ env vars.
 rem
-rem  NOTE: Trailing backslashes in paths are intented to be compatible with
-rem  MSBuild props.
+rem  NOTE: Trailing backslashes in some paths are intended to be compatible
+rem  with MSBuild props.
 rem  --------------------------------------------------------------------------
 
 set Platform=x64

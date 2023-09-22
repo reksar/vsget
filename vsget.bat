@@ -4,7 +4,6 @@ rem  --------------------------------------------------------------------------
 rem  Download and extract MSVC, MSBuild and Windows SDK to [destination]:
 rem
 rem    vsget [destination]
-rem
 rem  --------------------------------------------------------------------------
 
 setlocal
@@ -32,21 +31,21 @@ set "tmp=%destination%\tmp"
 set "archiver=%tmp%\7-zip"
 
 if not exist "%destination%\VC" (
-  call ensure-archiver "%archiver%"
-  call get-vsix-group "%VC_GROUP%" "%destination%" || exit /b 2
+  call ensure-archiver "%archiver%" || exit /b 2
+  call get-vsix-group "%VC_GROUP%" "%destination%" || exit /b 3
 ) else echo [WARN][%~n0] VC already exist!
 
 if not exist "%destination%\MSBuild" (
-  call ensure-archiver "%archiver%"
-  call get-vsix-group "%MSBUILD_GROUP%" "%destination%" || exit /b 3
+  call ensure-archiver "%archiver%" || exit /b 4
+  call get-vsix-group "%MSBUILD_GROUP%" "%destination%" || exit /b 5
 ) else echo [WARN][%~n0] MSBuild already exist!
 
 copy "%root%vs-tools\%VCVARS%.bat" "%destination%" >NUL 2>&1 || (
   echo [ERR][%~n0] Unable to copy vcvars!
-  exit /b 4
+  exit /b 6
 )
 
-call get-sdk "%SDK_URL%" "%destination%\SDK" || exit /b 5
+call get-sdk "%SDK_URL%" "%destination%\SDK" || exit /b 7
 
 if exist "%tmp%" (
   rd /q /s "%tmp%" >NUL 2>&1 || echo [WARN][%~n0] Unable to delete "%tmp%"!

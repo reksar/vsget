@@ -58,7 +58,7 @@ call download "%UTIL_URL%" "%UTIL%" || goto :FAIL
 echo OK
 
 echo|set/p=- Extracting 7-zip with util ... 
-%UTIL% x -y %ARCHIVE% >NUL || goto :FAIL
+"%UTIL%" x -y %ARCHIVE% >NUL || goto :FAIL
 echo OK
 
 if not exist "7z.exe" goto :FAIL
