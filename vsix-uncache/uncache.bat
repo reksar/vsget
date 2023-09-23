@@ -1,5 +1,7 @@
 @echo off
 
+rem  TODO: avoid using `strmatch`.
+
 rem  --------------------------------------------------------------------------
 rem  Using: `uncache [VS CACHE PATH] [GROUP] [PACKAGES ...]`.
 rem  Writes `%root%\vsix-downloaders\%group%.%version%.bat` downloader for specified
