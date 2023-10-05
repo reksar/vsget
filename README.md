@@ -2,7 +2,7 @@
 
 Collects portable MS Visual Studio tools.
 
-NOTE: currently only x64-x64 are available for host-target platforms.
+Currently only x64-x64 is available for host-target platforms.
 
 ```bat
 vsget [destination]
@@ -34,3 +34,17 @@ uncache-vsix [MSVS CACHE PATH]
 ```
 
 Uses the MS Visual Studio cache to generate `vsix-groups\*.txt` files.
+
+# Install Build Tools for Visual Studio
+
+If you don't need exactly a portable version of VS Tools (for example, when you
+need to *uncache* VSIX components), you can use `vsinstall` to automatically
+install the minimal Visual C++ tools:
+
+* Visual C++ Tools x64
+
+* Windows SDK
+
+Actual versions are set in `URL`, `VC` and `SDK` vars in `vsinstall.bat`:
+Build Tools for Visual Studio 2022 (v17);
+Windows 10 SDK v20348.
