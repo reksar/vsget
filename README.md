@@ -1,6 +1,6 @@
 # vsget
 
-Collects portable MS Visual Studio tools.
+Collects portable MS Visual Studio Tools.
 
 Currently only x64-x64 is available for host-target platforms.
 
@@ -8,11 +8,15 @@ Currently only x64-x64 is available for host-target platforms.
 vsget [destination]
 ```
 
-- Downloads and unpacks (without installation) to `[destination]` path:
-  * MS Visual C++ v143 *(~ 500 MB)*
-  * MS Build v170 *(~ 35 MB)*
-  * Windows SDK v10.0.22621.755 *(~ 2.4 GB)*
-- Adds related `vcvars*.bat` to init the environment before using the tools.
+Downloads and unpacks (without installation) to `destination`:
+
+* MS Visual C++ v143 *(~ 500 MB)*
+
+* MS Build v170 *(~ 35 MB)*
+
+* Windows SDK v10.0.22621.755 *(~ 2.4 GB)*
+
+Adds related `vcvars*.bat` to init the VS Tools environment.
 
 ## Windows SDK
 
@@ -23,17 +27,18 @@ get-sdk [destination]
 ```
 
 Downloads the ISO, extracts the MSI installers (with related CAB files) of the
-SDK components and unpacks them into `[destination]`.
+SDK components and unpacks them into `destination`.
 
-# Uncache MS Visual Studio components
+# Uncache MS Visual Studio Components
 
-**NOTE: it is broken at the moment!**
+Use the MS Visual Studio cache to generate `vsix-groups\*.txt` files:
 
 ```bat
-uncache-vsix [MSVS CACHE PATH]
+vsuncache {CachePath}
 ```
 
-Uses the MS Visual Studio cache to generate `vsix-groups\*.txt` files.
+If the optional `CachePath` is ommited, tries to find the VS cache path in the
+Windows Registry.
 
 # Install Build Tools for Visual Studio
 
