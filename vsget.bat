@@ -19,11 +19,12 @@ set MSBUILD_GROUP=msbuild-x64.%MSBUILD_V%
 rem  Windows SDK v10.0.22621.755
 set SDK_URL=https://go.microsoft.com/fwlink/?linkid=2196240
 
+rem  VC Vars for Host x64 and Platform x64
 set VCVARS=vcvars-x64-x64
 
 set root=%~dp0
 
-call which which >NUL 2>&1 || set "PATH=%root%utils;%PATH%"
+call which destination >NUL 2>&1 || set "PATH=%root%utils;%PATH%"
 call which get-vsix-group >NUL 2>&1 || set "PATH=%root%;%PATH%"
 
 call destination "%~1" || exit /b 1

@@ -53,6 +53,7 @@ for %%i in ("%installers%\*.msi") do (
     echo -   %%~ni
     lessmsi x "%%i" >> lessmsi.log || (
       echo [ERR][%~n0] Unable to extract SDK Component!
+      echo [INFO][%~n0] See "%components%\lessmsi.log".
       cd /d "%origin_path%"
       exit /b 3
     )

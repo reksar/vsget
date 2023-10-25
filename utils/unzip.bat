@@ -5,7 +5,7 @@ setlocal
 set zip=%~1
 set destination=%~2
 
-call which which >NUL 2>&1 || set "PATH=%~dp0;%PATH%"
+call which destination >NUL 2>&1 || set "PATH=%~dp0;%PATH%"
 
 call which 7z >NUL 2>&1 && (
   7z x -y -o"%destination%" "%zip%" >NUL || exit /b 1

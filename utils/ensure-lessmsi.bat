@@ -19,7 +19,7 @@ set LESSMSI_DOWNLOAD=https://github.com/activescott/lessmsi/releases/download
 set LESSMSI_URL=%LESSMSI_DOWNLOAD%/%LESSMSI_VER%/%LESSMSI_ZIP%
 
 rem  Abs path expected!
-call which which >NUL 2>&1 || set "PATH=%~dp0;%PATH%"
+call which destination >NUL 2>&1 || set "PATH=%~dp0;%PATH%"
 call destination "%~1" || exit /b 1
 
 echo.

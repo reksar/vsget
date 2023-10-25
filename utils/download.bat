@@ -24,7 +24,7 @@ if exist "%outfile%" (
 )
 
 rem  Utility preset.
-call which which >NUL 2>&1 || set "PATH=%root%;%PATH%"
+call which destination >NUL 2>&1 || set "PATH=%root%;%PATH%"
 
 rem  Ensure the %outfile% dir exists.
 for %%i in ("%outfile%") do if not exist "%%~dpi" md "%%~dpi"

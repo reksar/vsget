@@ -12,7 +12,7 @@ rem  --------------------------------------------------------------------------
 
 setlocal
 
-call which which >NUL 2>&1 || set "PATH=%~dp0utils;%PATH%"
+call which destination >NUL 2>&1 || set "PATH=%~dp0utils;%PATH%"
 call which check-components >NUL 2>&1 || set "PATH=%~dp0sdk;%PATH%"
 
 set url=%~1
