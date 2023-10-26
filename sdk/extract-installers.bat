@@ -1,9 +1,7 @@
 @echo off
 
 rem  --------------------------------------------------------------------------
-rem  Extracts the Windows SDK Installers from the [iso] to the [installers] dir.
-rem
-rem  Using:
+rem  Extracts the Windows SDK Installers from the [iso] to the [installers] dir:
 rem
 rem    extract-installers [iso] [installers]
 rem  --------------------------------------------------------------------------
