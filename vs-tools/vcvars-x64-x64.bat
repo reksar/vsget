@@ -1,23 +1,23 @@
 @echo off
 
 rem  --------------------------------------------------------------------------
-rem  Init portable MS Visual C++ env vars.
+rem  Init portable MS Visual Studio env vars.
 rem
 rem  NOTE: Trailing backslashes in some paths are intended to be compatible
-rem  with MSBuild props.
+rem  with MSBuild props!
 rem  --------------------------------------------------------------------------
 
 set Platform=x64
 set HostPlatform=x64
 set DisableRegistryUse=true
 set "VSINSTALLDIR=%~dp0"
-set "VCINSTALLDIR=%VSINSTALLDIR%\VC"
+set "VCINSTALLDIR=%VSINSTALLDIR%VC"
 
 
 rem  --- Detect MSVC version --------------------------------------------------
 
-rem  Find dir with latest version name, e.g. "14.32.31326" for MSVC v143.
-for /f %%i in ('dir /b /a:d "%VSINSTALLDIR%VC\Tools\MSVC\*.*.*"') do (
+rem  Find the dir named latest version, e.g. "14.32.31326" for MSVC v143.
+for /f %%i in ('dir /b /a:d "%VCINSTALLDIR%\Tools\MSVC\*.*.*"') do (
   set "VCToolsVersion=%%i"
 )
 
@@ -45,45 +45,51 @@ if not "%v%" == "" (
 
 rem  When %DisableRegistryUse% is true:
 rem  - this env var does not affect MSBuild props
-set "VCToolsInstallDir=%VSINSTALLDIR%VC\Tools\MSVC\%VCToolsVersion%\"
+set "VCToolsInstallDir=%VCINSTALLDIR%\Tools\MSVC\%VCToolsVersion%\"
 rem  - sets the `VCToolsInstallDir` in MSBuild props
 set "VCToolsInstallDir_%v%=%VCToolsInstallDir%"
-
-
-rem  Pick the latest dir in the `Windows Kits`.
-for /f %%i in ('dir /b /a:d "%VSINSTALLDIR%SDK\Windows Kits"') do (
-  set "WindowsSDKDir=%VSINSTALLDIR%SDK\Windows Kits\%%i\"
-)
 
 
 rem  --- Detect Windows SDK ---------------------------------------------------
 
 :SDK
 
-rem  Pick the latest common version for Lib and Include.
-for /f %%i in ('dir /b /a:d "%WindowsSDKDir%Lib"') do (
-  for /f %%j in ('dir /b /a:d "%WindowsSDKDir%Include"') do (
+if not exist "%VSINSTALLDIR%SDK\Windows Kits" (
+  echo [WARN][%~n0] Windows SDK not found!
+  goto :MAIN_VARS
+)
+
+rem  Pick the latest dir in the `Windows Kits`.
+for /f %%i in ('dir /b /a:d "%VSINSTALLDIR%SDK\Windows Kits" 2^>NUL') do (
+  set "WindowsSDKDir=%VSINSTALLDIR%SDK\Windows Kits\%%i\"
+)
+
+rem  Pick the latest common SDK version for Lib and Include.
+for /f %%i in ('dir /b /a:d "%WindowsSDKDir%Lib" 2^>NUL') do (
+  for /f %%j in ('dir /b /a:d "%WindowsSDKDir%Include" 2^>NUL') do (
     if "%%i" == "%%j" (
       set SDKVersion=%%i
     )
   )
 )
+if "%SDKVersion%" == "" (
+  echo [ERR][%~n0] Unable to detect Windows SDK version!
+  goto :MAIN_VARS
+)
 
 rem  Check related binaries for %SDKVersion%.
-
 set "SDKBin=%WindowsSDKDir%bin\%SDKVersion%\%Platform%\"
 set list_bin=dir /b "%SDKBin%*.exe"
 set find_bin=findstr /p /n /e /c:"\.exe"
-
 if exist "%SDKBin%" (
   for /f "tokens=1 delims=:" %%i in ('%list_bin% ^| %find_bin%') do (
     if %%i GTR 0 goto :MAIN_VARS
   )
 ) else (
-  echo [WARN][%~n0] No binaries for Windows SDK %SDKVersion%
+  echo [WARN][%~n0] No binaries for Windows SDK %SDKVersion%!
   goto :MAIN_VARS
 )
-echo [WARN][%~n0] Too few binaries for Windows SDK %SDKVersion%
+echo [WARN][%~n0] Too few binaries for Windows SDK %SDKVersion%!
 
 
 rem  --------------------------------------------------------------------------
