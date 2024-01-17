@@ -5,7 +5,7 @@ Collects portable MS Visual Studio Tools.
 Currently only x64-x64 is available for host-target platforms.
 
 ```bat
-vsget [destination]
+vsget "[destination]"
 ```
 
 Downloads and unpacks (without installation) to `destination`:
@@ -23,18 +23,20 @@ Adds related `vcvars*.bat` to init the VS Tools environment.
 Windows SDK can be downloaded separately:
 
 ```bat
-get-sdk [destination]
+get-sdk "[url]" "[destination]"
 ```
 
 Downloads the ISO, extracts the MSI installers (with related CAB files) of the
 SDK components and unpacks them into `destination`.
+
+The actual `SDK_URL` can be found in `vsget.bat`.
 
 # Uncache MS Visual Studio Components
 
 Use the MS Visual Studio cache to generate `vsix-groups\*.txt` files:
 
 ```bat
-vsuncache {CachePath}
+vsuncache "{CachePath}"
 ```
 
 If the optional `CachePath` is ommited, tries to find the VS cache path in the

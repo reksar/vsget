@@ -16,6 +16,17 @@ call which destination >NUL 2>&1 || set "PATH=%~dp0utils;%PATH%"
 call which check-components >NUL 2>&1 || set "PATH=%~dp0sdk;%PATH%"
 
 set url=%~1
+
+if "%url%" == "" (
+  echo [ERR][%~n0] SDK URL is required!
+  exit /b 1
+)
+
+if not "%url:~0,4%" == "http" (
+  echo [ERR][%~n0] Invalid SDK URL!
+  exit /b 1
+)
+
 call destination "%~2" || exit /b 1
 
 call check-components "%destination%" && (
